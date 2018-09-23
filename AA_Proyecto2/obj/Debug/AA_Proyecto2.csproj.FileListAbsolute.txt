@@ -1,0 +1,9 @@
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\bin\Debug\AA_Proyecto2.exe
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\bin\Debug\AA_Proyecto2.pdb
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.csprojAssemblyReference.cache
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.AppWin.resources
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.Properties.Resources.resources
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.csproj.GenerateResource.cache
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.csproj.CoreCompileInputs.cache
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.exe
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.pdb
