@@ -1,9 +1,9 @@
-# AA_Proyecto2
-IC-3002 - Análisis de Algoritmos, GR 1
+# IC-3002 - Análisis de Algoritmos, GR 1
+## Proyecto 2: Killer Sudoku
 Profesor: José Carranza Rojas
 
-Proyecto 2: Killer Sudoku
 Elaborado por:
-   >   201716886 = Carlos Roberto Esquivel Morales
+- 201716886 = Carlos Roberto Esquivel Morales
    
-   Semestre 2, 2018
+\
+_Semestre 2, 2018_
