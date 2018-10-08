@@ -51,6 +51,18 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sudoku.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Sudoku.Designer.cs">
+      <DependentUpon>Sudoku.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SudokuCell.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SudokuCell.Designer.cs">
+      <DependentUpon>SudokuCell.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AppWin.resx">
       <DependentUpon>AppWin.cs</DependentUpon>
     </EmbeddedResource>
@@ -63,6 +75,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SudokuCell.resx">
+      <DependentUpon>SudokuCell.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

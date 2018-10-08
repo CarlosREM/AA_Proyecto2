@@ -11,12 +11,13 @@ namespace AA_Proyecto2
 {
     public partial class AppWin : Form
     {
+
         public AppWin()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void btn_generate_Click(object sender, EventArgs e)
         {
 
         }
@@ -31,6 +32,7 @@ namespace AA_Proyecto2
 
         }
 
+        //UI Usability
         private void sldr_size_ValueChanged(object sender, EventArgs e)
         {
             lbl_sizeNum.Text = sldr_size.Value.ToString();
@@ -58,7 +60,8 @@ namespace AA_Proyecto2
                           "\n" +
                           "Proyecto 2: Killer Sudoku\n" +
                           "Elaborado por:\n" +
-                          "  >  201716886 = Carlos Roberto Esquivel Morales\n" +
+                          "  >  2017146886 = Carlos Roberto Esquivel Morales\n" +
+                          "  >  2017100950 = José Fabio Hidalgo Rodríguez\n" +
                           "\n" +
                           "Semestre 2, 2018";
             MessageBox.Show(info, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);

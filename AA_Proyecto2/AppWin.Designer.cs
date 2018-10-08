@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AppWin));
             this.pnl_options = new System.Windows.Forms.Panel();
+            this.btn_about = new System.Windows.Forms.Button();
             this.btn_useThreads = new System.Windows.Forms.CheckBox();
             this.btn_load = new System.Windows.Forms.Button();
             this.btn_save = new System.Windows.Forms.Button();
@@ -41,7 +42,7 @@
             this.sp1 = new System.Windows.Forms.Label();
             this.lbl_size = new System.Windows.Forms.Label();
             this.lbl_options = new System.Windows.Forms.Label();
-            this.btn_about = new System.Windows.Forms.Button();
+            this.Board = new Sudoku();
             this.pnl_options.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sldr_thread)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sldr_size)).BeginInit();
@@ -63,10 +64,26 @@
             this.pnl_options.Controls.Add(this.sp1);
             this.pnl_options.Controls.Add(this.lbl_size);
             this.pnl_options.Controls.Add(this.lbl_options);
+            this.pnl_options.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnl_options.Location = new System.Drawing.Point(0, 0);
             this.pnl_options.Name = "pnl_options";
             this.pnl_options.Size = new System.Drawing.Size(210, 753);
             this.pnl_options.TabIndex = 0;
+            // 
+            // btn_about
+            // 
+            this.btn_about.BackColor = System.Drawing.Color.SteelBlue;
+            this.btn_about.Cursor = System.Windows.Forms.Cursors.Help;
+            this.btn_about.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btn_about.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_about.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btn_about.Location = new System.Drawing.Point(-1, -1);
+            this.btn_about.Name = "btn_about";
+            this.btn_about.Size = new System.Drawing.Size(30, 30);
+            this.btn_about.TabIndex = 12;
+            this.btn_about.Text = "i";
+            this.btn_about.UseVisualStyleBackColor = false;
+            this.btn_about.Click += new System.EventHandler(this.btn_about_Click);
             // 
             // btn_useThreads
             // 
@@ -83,6 +100,7 @@
             // 
             // btn_load
             // 
+            this.btn_load.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btn_load.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btn_load.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_load.Location = new System.Drawing.Point(9, 704);
@@ -95,6 +113,7 @@
             // 
             // btn_save
             // 
+            this.btn_save.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btn_save.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btn_save.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_save.Location = new System.Drawing.Point(9, 662);
@@ -107,6 +126,7 @@
             // 
             // btn_generate
             // 
+            this.btn_generate.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btn_generate.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btn_generate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_generate.Font = new System.Drawing.Font("Corbel", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -117,11 +137,13 @@
             this.btn_generate.TabIndex = 8;
             this.btn_generate.Text = "GENERATE";
             this.btn_generate.UseVisualStyleBackColor = false;
+            this.btn_generate.Click += new System.EventHandler(this.btn_generate_Click);
             // 
             // lbl_threadNum
             // 
+            this.lbl_threadNum.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lbl_threadNum.Enabled = false;
-            this.lbl_threadNum.Font = new System.Drawing.Font("Corbel", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_threadNum.Font = new System.Drawing.Font("Corbel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_threadNum.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.lbl_threadNum.Location = new System.Drawing.Point(143, 521);
             this.lbl_threadNum.Name = "lbl_threadNum";
@@ -131,7 +153,8 @@
             // 
             // lbl_sizeNum
             // 
-            this.lbl_sizeNum.Font = new System.Drawing.Font("Corbel", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_sizeNum.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.lbl_sizeNum.Font = new System.Drawing.Font("Corbel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_sizeNum.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.lbl_sizeNum.Location = new System.Drawing.Point(11, 524);
             this.lbl_sizeNum.Name = "lbl_sizeNum";
@@ -142,6 +165,8 @@
             // 
             // sldr_thread
             // 
+            this.sldr_thread.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.sldr_thread.Enabled = false;
             this.sldr_thread.LargeChange = 1;
             this.sldr_thread.Location = new System.Drawing.Point(143, 121);
@@ -156,6 +181,8 @@
             // 
             // sldr_size
             // 
+            this.sldr_size.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.sldr_size.LargeChange = 1;
             this.sldr_size.Location = new System.Drawing.Point(11, 121);
             this.sldr_size.Maximum = 19;
@@ -165,11 +192,12 @@
             this.sldr_size.Size = new System.Drawing.Size(56, 400);
             this.sldr_size.TabIndex = 4;
             this.sldr_size.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.sldr_size.Value = 5;
+            this.sldr_size.Value = 9;
             this.sldr_size.ValueChanged += new System.EventHandler(this.sldr_size_ValueChanged);
             // 
             // sp1
             // 
+            this.sp1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.sp1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.sp1.Location = new System.Drawing.Point(9, 572);
             this.sp1.Name = "sp1";
@@ -198,34 +226,26 @@
             this.lbl_options.TabIndex = 0;
             this.lbl_options.Text = "Options";
             this.lbl_options.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btn_about
-            // 
-            this.btn_about.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_about.BackColor = System.Drawing.Color.SteelBlue;
-            this.btn_about.Font = new System.Drawing.Font("Corbel", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_about.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btn_about.Location = new System.Drawing.Point(-1, -1);
-            this.btn_about.Name = "btn_about";
-            this.btn_about.Size = new System.Drawing.Size(30, 30);
-            this.btn_about.TabIndex = 12;
-            this.btn_about.Text = "i";
-            this.btn_about.UseVisualStyleBackColor = false;
-            this.btn_about.Click += new System.EventHandler(this.btn_about_Click);
-            // 
+            //
+            // Board (Sudoku)
+            //*
+            this.Board.Location = new System.Drawing.Point(270, 50);
+            this.Board.Name = "Board";
+            // */
             // AppWin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(1582, 753);
+            this.ClientSize = new System.Drawing.Size(0, 0);
             this.Controls.Add(this.pnl_options);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Controls.Add(this.Board);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(810, 605);
             this.Name = "AppWin";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Proyecto 2 - Killer Sudoku";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.pnl_options.ResumeLayout(false);
             this.pnl_options.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sldr_thread)).EndInit();
@@ -249,6 +269,7 @@
         private System.Windows.Forms.Label lbl_sizeNum;
         private System.Windows.Forms.CheckBox btn_useThreads;
         private System.Windows.Forms.Button btn_about;
+        private Sudoku Board;
     }
 }
 
