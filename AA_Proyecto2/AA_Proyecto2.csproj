@@ -63,6 +63,7 @@
     <Compile Include="SudokuCell.Designer.cs">
       <DependentUpon>SudokuCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="SudokuRegion.cs" />
     <EmbeddedResource Include="AppWin.resx">
       <DependentUpon>AppWin.cs</DependentUpon>
     </EmbeddedResource>

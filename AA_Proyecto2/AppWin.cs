@@ -11,10 +11,20 @@ namespace AA_Proyecto2
 {
     public partial class AppWin : Form
     {
+        private Sudoku Board { get; set; }
 
         public AppWin()
         {
             InitializeComponent();
+            InitializeBoard();
+        }
+
+        public void InitializeBoard(int Dimension = 9)
+        {
+            Board = new Sudoku(Dimension);
+            Board.Location = new Point(180, 20);
+            Board.Name = "Board";
+            Controls.Add(Board);
         }
 
         private void btn_generate_Click(object sender, EventArgs e)
@@ -36,6 +46,9 @@ namespace AA_Proyecto2
         private void sldr_size_ValueChanged(object sender, EventArgs e)
         {
             lbl_sizeNum.Text = sldr_size.Value.ToString();
+            Board.Dispose();
+            InitializeBoard(sldr_size.Value);
+            Refresh();
         }
 
         private void sldr_thread_ValueChanged(object sender, EventArgs e)

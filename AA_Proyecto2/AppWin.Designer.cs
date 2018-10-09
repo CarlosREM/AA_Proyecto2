@@ -42,7 +42,6 @@
             this.sp1 = new System.Windows.Forms.Label();
             this.lbl_size = new System.Windows.Forms.Label();
             this.lbl_options = new System.Windows.Forms.Label();
-            this.Board = new Sudoku();
             this.pnl_options.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sldr_thread)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sldr_size)).BeginInit();
@@ -67,7 +66,7 @@
             this.pnl_options.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnl_options.Location = new System.Drawing.Point(0, 0);
             this.pnl_options.Name = "pnl_options";
-            this.pnl_options.Size = new System.Drawing.Size(210, 753);
+            this.pnl_options.Size = new System.Drawing.Size(210, 553);
             this.pnl_options.TabIndex = 0;
             // 
             // btn_about
@@ -103,7 +102,7 @@
             this.btn_load.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btn_load.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btn_load.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_load.Location = new System.Drawing.Point(9, 704);
+            this.btn_load.Location = new System.Drawing.Point(9, 504);
             this.btn_load.Name = "btn_load";
             this.btn_load.Size = new System.Drawing.Size(190, 36);
             this.btn_load.TabIndex = 10;
@@ -116,7 +115,7 @@
             this.btn_save.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btn_save.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btn_save.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_save.Location = new System.Drawing.Point(9, 662);
+            this.btn_save.Location = new System.Drawing.Point(9, 462);
             this.btn_save.Name = "btn_save";
             this.btn_save.Size = new System.Drawing.Size(190, 36);
             this.btn_save.TabIndex = 9;
@@ -131,7 +130,7 @@
             this.btn_generate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_generate.Font = new System.Drawing.Font("Corbel", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_generate.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btn_generate.Location = new System.Drawing.Point(9, 587);
+            this.btn_generate.Location = new System.Drawing.Point(9, 387);
             this.btn_generate.Name = "btn_generate";
             this.btn_generate.Size = new System.Drawing.Size(190, 60);
             this.btn_generate.TabIndex = 8;
@@ -145,7 +144,7 @@
             this.lbl_threadNum.Enabled = false;
             this.lbl_threadNum.Font = new System.Drawing.Font("Corbel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_threadNum.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.lbl_threadNum.Location = new System.Drawing.Point(143, 521);
+            this.lbl_threadNum.Location = new System.Drawing.Point(143, 321);
             this.lbl_threadNum.Name = "lbl_threadNum";
             this.lbl_threadNum.Size = new System.Drawing.Size(56, 30);
             this.lbl_threadNum.TabIndex = 7;
@@ -156,7 +155,7 @@
             this.lbl_sizeNum.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lbl_sizeNum.Font = new System.Drawing.Font("Corbel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_sizeNum.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.lbl_sizeNum.Location = new System.Drawing.Point(11, 524);
+            this.lbl_sizeNum.Location = new System.Drawing.Point(11, 324);
             this.lbl_sizeNum.Name = "lbl_sizeNum";
             this.lbl_sizeNum.Size = new System.Drawing.Size(56, 30);
             this.lbl_sizeNum.TabIndex = 6;
@@ -173,7 +172,7 @@
             this.sldr_thread.Minimum = 1;
             this.sldr_thread.Name = "sldr_thread";
             this.sldr_thread.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.sldr_thread.Size = new System.Drawing.Size(56, 397);
+            this.sldr_thread.Size = new System.Drawing.Size(56, 197);
             this.sldr_thread.TabIndex = 5;
             this.sldr_thread.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.sldr_thread.Value = 1;
@@ -189,7 +188,7 @@
             this.sldr_size.Minimum = 5;
             this.sldr_size.Name = "sldr_size";
             this.sldr_size.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.sldr_size.Size = new System.Drawing.Size(56, 400);
+            this.sldr_size.Size = new System.Drawing.Size(56, 200);
             this.sldr_size.TabIndex = 4;
             this.sldr_size.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.sldr_size.Value = 9;
@@ -199,7 +198,7 @@
             // 
             this.sp1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.sp1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.sp1.Location = new System.Drawing.Point(9, 572);
+            this.sp1.Location = new System.Drawing.Point(9, 372);
             this.sp1.Name = "sp1";
             this.sp1.Size = new System.Drawing.Size(190, 2);
             this.sp1.TabIndex = 3;
@@ -226,23 +225,16 @@
             this.lbl_options.TabIndex = 0;
             this.lbl_options.Text = "Options";
             this.lbl_options.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
-            // Board (Sudoku)
-            //*
-            this.Board.Location = new System.Drawing.Point(270, 50);
-            this.Board.Name = "Board";
-            // */
+            // 
             // AppWin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(0, 0);
+            this.ClientSize = new System.Drawing.Size(822, 553);
             this.Controls.Add(this.pnl_options);
-            this.Controls.Add(this.Board);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(810, 605);
+            this.MinimumSize = new System.Drawing.Size(840, 600);
             this.Name = "AppWin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Proyecto 2 - Killer Sudoku";
@@ -269,7 +261,6 @@
         private System.Windows.Forms.Label lbl_sizeNum;
         private System.Windows.Forms.CheckBox btn_useThreads;
         private System.Windows.Forms.Button btn_about;
-        private Sudoku Board;
     }
 }
 
