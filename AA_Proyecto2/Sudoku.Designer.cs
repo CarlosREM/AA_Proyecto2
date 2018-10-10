@@ -28,7 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // Sudoku
+            // 
+            this.BackColor = System.Drawing.Color.Black;
+            this.ResumeLayout(false);
+
         }
 
         #endregion

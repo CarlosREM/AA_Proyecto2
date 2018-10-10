@@ -11,10 +11,15 @@ namespace AA_Proyecto2
 {
     public partial class SudokuCell : Panel
     {
+        public int Answer = 0;
         private int Number { get; set; } = 0;
         private int Result { get; set; } = 0;
+
         private int Row { get; set; }
         private int Column { get; set; }
+
+        public SudokuRegion sRegion = null;
+        public Tetromino sTetro = null;
 
         private Label Lbl_Number;
         private Label Lbl_Result;

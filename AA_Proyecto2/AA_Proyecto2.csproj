@@ -64,6 +64,7 @@
       <DependentUpon>SudokuCell.cs</DependentUpon>
     </Compile>
     <Compile Include="SudokuRegion.cs" />
+    <Compile Include="Tetromino.cs" />
     <EmbeddedResource Include="AppWin.resx">
       <DependentUpon>AppWin.cs</DependentUpon>
     </EmbeddedResource>
@@ -76,6 +77,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Sudoku.resx">
+      <DependentUpon>Sudoku.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SudokuCell.resx">
       <DependentUpon>SudokuCell.cs</DependentUpon>
     </EmbeddedResource>

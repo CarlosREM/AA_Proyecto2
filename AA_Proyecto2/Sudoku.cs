@@ -11,20 +11,23 @@ namespace AA_Proyecto2
 {
     public partial class Sudoku : Panel
     {
-        private SudokuCell[,] CellMatrix;
+        private SudokuCell[,] CellGrid;
         private SudokuRegion[] Regions;
+        private List<Tetromino> Tetrominos;
         private int Dimension;
 
         private const int CellSize = 35;
         private const int Spacer = 5;
 
+        public SudokuCell GetCellAt(int Row, int Column) { return CellGrid[Row, Column]; }
+
         public Sudoku(int pDimension)
         {
             InitializeComponent();
-            BackColor = System.Drawing.Color.Black;
             Dimension = pDimension;
-            CellMatrix = new SudokuCell[Dimension, Dimension];
+            CellGrid = new SudokuCell[Dimension, Dimension];
             Regions = new SudokuRegion[Dimension];
+            Tetrominos = new List<Tetromino>();
             for (int i = 0; i < Dimension; i++)
                 Regions[i] = new SudokuRegion(Dimension);
             SuspendLayout();
@@ -83,6 +86,9 @@ namespace AA_Proyecto2
                     break;
             }
             /*
+            if (CellGrid[0, 0] != null)
+                Tetrominos.Add(new Tetromino(this, 0, 0));
+            /*
             for (int i = 0; i < Dimension; i++)
                 Console.WriteLine(i + " " + Regions[i].ToString());
             //*/
@@ -90,7 +96,51 @@ namespace AA_Proyecto2
 
         private void Arrange_5x5()
         {
-            Size = new Size(CellSize * Dimension + Spacer * 6, CellSize * Dimension + Spacer * 6);
+            int RegionSpacerV = Spacer,
+                RegionSpacerH = Spacer;
+            for (int i = 0; i < Dimension; i++)
+            {
+                if (i == 0)
+                    RegionSpacerV = Spacer;
+                else if (i % 2 == 0)
+                    RegionSpacerV += Spacer;
+
+                for (int j = 0; j < Dimension; j++)
+                {
+                    if (j == 0)
+                        RegionSpacerH = Spacer;
+                    
+                    switch(i)
+                    {
+                        case 0:
+                            if (j == 3)
+                                RegionSpacerH += Spacer;
+                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                            break;
+                        case 1:
+                            if (j == 2 || j == 3)
+                                RegionSpacerH += Spacer;
+                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                            break;
+                        case 2:
+                            if (j == 1 || j == 4)
+                                RegionSpacerH += Spacer;
+                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                            break;
+                        case 3:
+                            if (j == 2 || j == 3)
+                                RegionSpacerH += Spacer;
+                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                            break;
+                        case 4:
+                            if (j == 2)
+                                RegionSpacerH += Spacer;
+                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                            break;
+                    }
+                }
+            }
+            Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 4);
         }
 
         private void Arrange_6x6()
@@ -111,15 +161,8 @@ namespace AA_Proyecto2
                     else if (j % 3 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer*3, CellSize * Dimension + Spacer*4);
@@ -148,15 +191,10 @@ namespace AA_Proyecto2
                     else if (j % 4 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    //CellGrid[i, j].SetNumber(i);
+                    //CellGrid[i, j].SetResult(j);
+                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 3, CellSize * Dimension + Spacer * 5);
@@ -180,16 +218,11 @@ namespace AA_Proyecto2
                     else if (j % 3 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
-;                }
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    //CellGrid[i, j].SetNumber(i);
+                    //CellGrid[i, j].SetResult(j);
+                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                    ;                }
             }
             Size = new Size(CellSize * Dimension + Spacer*4, CellSize * Dimension + Spacer*4);
         }
@@ -212,15 +245,10 @@ namespace AA_Proyecto2
                     else if (j % 5 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    //CellGrid[i, j].SetNumber(i);
+                    //CellGrid[i, j].SetResult(j);
+                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 3, CellSize * Dimension + Spacer * 6);
@@ -249,15 +277,10 @@ namespace AA_Proyecto2
                     else if (j % 4 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    //CellGrid[i, j].SetNumber(i);
+                    //CellGrid[i, j].SetResult(j);
+                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 5);
@@ -286,15 +309,10 @@ namespace AA_Proyecto2
                     else if (j % 7 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    //CellGrid[i, j].SetNumber(i);
+                    //CellGrid[i, j].SetResult(j);
+                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 3, CellSize * Dimension + Spacer * 8);
@@ -318,15 +336,10 @@ namespace AA_Proyecto2
                     else if (j % 5 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    //CellGrid[i, j].SetNumber(i);
+                    //CellGrid[i, j].SetResult(j);
+                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 6);
@@ -350,15 +363,9 @@ namespace AA_Proyecto2
                     else if (j % 4 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 4*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);                    //CellGrid[i, j].SetNumber(i);
+                    //CellGrid[i, j].SetResult(j);
+                    //Regions[(RegionSpacerH / Spacer - 1) + 4*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 5, CellSize * Dimension + Spacer * 5);
@@ -387,15 +394,10 @@ namespace AA_Proyecto2
                     else if (j % 6 == 0)
                         RegionSpacerH += Spacer;
 
-                    CellMatrix[i, j] = new SudokuCell(i, j);
-                    CellMatrix[i, j].SuspendLayout();
-                    CellMatrix[i, j].Location = new Point(j * CellSize + RegionSpacerH, i * CellSize + RegionSpacerV);
-                    CellMatrix[i, j].ResumeLayout();
-                    CellMatrix[i, j].PerformLayout();
-                    Controls.Add(CellMatrix[i, j]);
-                    CellMatrix[i, j].SetNumber(i);
-                    CellMatrix[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellMatrix[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    //CellGrid[i, j].SetNumber(i);
+                    //CellGrid[i, j].SetResult(j);
+                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 7);
@@ -406,13 +408,23 @@ namespace AA_Proyecto2
             Size = new Size(CellSize * Dimension + Spacer * 16, CellSize * Dimension + Spacer * 18);
         }
 
+        private void AddCell(int Row, int Column, int RegionSpacerH, int RegionSpacerV)
+        {
+            CellGrid[Row, Column] = new SudokuCell(Row, Column);
+            CellGrid[Row, Column].SuspendLayout();
+            CellGrid[Row, Column].Location = new Point(Column * CellSize + RegionSpacerH, Row * CellSize + RegionSpacerV);
+            CellGrid[Row, Column].ResumeLayout();
+            CellGrid[Row, Column].PerformLayout();
+            Controls.Add(CellGrid[Row, Column]);
+        }
+
         public bool CheckRow(int Row, int Number)
         {
             bool result = false;
             SudokuCell Cell;
             for (int Column = 0; Column < Dimension; Column++)
             {
-                Cell = CellMatrix[Row, Column];
+                Cell = CellGrid[Row, Column];
                 if (Cell.GetNumber() == Number)
                 {
                     result = true;
@@ -428,7 +440,7 @@ namespace AA_Proyecto2
             SudokuCell Cell;
             for (int Row = 0; Row < Dimension; Row++)
             {
-                Cell = CellMatrix[Row, Column];
+                Cell = CellGrid[Row, Column];
                 if (Cell.GetNumber() == Number)
                 {
                     result = true;

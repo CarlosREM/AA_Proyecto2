@@ -8,3 +8,4 @@ C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyec
 C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.exe
 C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.pdb
 C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.SudokuCell.resources
+C:\Users\carlo\Documents\U\2018 - 2 (4)\Analisis de Algoritmos\Progras\AA_Proyecto2\AA_Proyecto2\AA_Proyecto2\obj\Debug\AA_Proyecto2.Sudoku.resources

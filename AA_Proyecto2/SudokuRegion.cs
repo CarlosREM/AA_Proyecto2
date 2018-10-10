@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AA_Proyecto2
 {
-    class SudokuRegion
+    public class SudokuRegion
     {
         private SudokuCell[] Region;
         private int Length { get; set; } = 0;
@@ -20,11 +20,12 @@ namespace AA_Proyecto2
             if (Length < Region.Length)
             {
                 Region[Length] = NewCell;
+                NewCell.sRegion = this;
                 Length++;
             }
         }
 
-        public Boolean CheckRegion(int Number)
+        public Boolean CheckNumber(int Number)
         {
             bool NumberFound = false;
             foreach(SudokuCell Cell in Region)
