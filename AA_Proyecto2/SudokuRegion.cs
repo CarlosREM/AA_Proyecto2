@@ -14,6 +14,16 @@ namespace AA_Proyecto2
         {
             Region = new SudokuCell[Dimension];
         }
+        
+        public void test()
+        {
+            if (Length == Region.Length)
+            {
+                System.Drawing.Color c = Tetromino.PickColor();
+                foreach (SudokuCell cell in Region)
+                    cell.BackColor = c;
+            }
+        }
 
         public void AddCell(SudokuCell NewCell)
         {
@@ -28,12 +38,15 @@ namespace AA_Proyecto2
         public Boolean CheckNumber(int Number)
         {
             bool NumberFound = false;
-            foreach(SudokuCell Cell in Region)
+            if (Length == Region.Length)
             {
-                if (Cell.GetNumber() == Number)
+                foreach (SudokuCell Cell in Region)
                 {
-                    NumberFound = true;
-                    break;
+                    if (Cell.GetNumber() == Number)
+                    {
+                        NumberFound = true;
+                        break;
+                    }
                 }
             }
             return NumberFound;

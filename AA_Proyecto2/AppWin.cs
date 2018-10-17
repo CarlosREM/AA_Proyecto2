@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AA_Proyecto2
@@ -12,24 +13,64 @@ namespace AA_Proyecto2
     public partial class AppWin : Form
     {
         private Sudoku Board { get; set; }
+        private BackgroundWorker UIThread;
 
         public AppWin()
         {
             InitializeComponent();
-            InitializeBoard();
+            UIThread = new BackgroundWorker();
+            UIThread.WorkerSupportsCancellation = true;
+            UIThread.DoWork += Th_InitializeBoard;
+            UIThread.RunWorkerCompleted += Th_AddBoard;
+            InitializeBoard(9);
+            Controls.Add(Board);
         }
 
-        public void InitializeBoard(int Dimension = 9)
+        private void Th_InitializeBoard(object sender, DoWorkEventArgs e)
+        {
+            //Thread.Sleep(100);
+            int dimension = (int) e.Argument;
+            InitializeBoard(dimension);
+        }
+
+        private void Th_AddBoard(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Controls.Add(Board);
+            sldr_size.Enabled = true;
+            btn_generate.Enabled = true;
+        }
+
+        private void InitializeBoard(int Dimension)
         {
             Board = new Sudoku(Dimension);
             Board.Location = new Point(180, 20);
             Board.Name = "Board";
-            Controls.Add(Board);
         }
 
+        //UI Usability
         private void btn_generate_Click(object sender, EventArgs e)
         {
+            sldr_size.Enabled = false;
+            btn_generate.Enabled = false;
+            btn_solve.Enabled = true;
+            btn_clear.Enabled = true;
+            btn_save.Enabled = true;
+        }
 
+        private void btn_solve_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            int dimension = sldr_size.Value;
+            //generate new sudoku
+            sldr_size.Enabled = true;
+            btn_generate.Enabled = true;
+            btn_solve.Enabled = false;
+            btn_clear.Enabled = false;
+            btn_save.Enabled = false;
         }
 
         private void btn_save_Click(object sender, EventArgs e)
@@ -39,16 +80,41 @@ namespace AA_Proyecto2
 
         private void btn_load_Click(object sender, EventArgs e)
         {
+            bool load = true;
+            if (btn_clear.Enabled)
+            {
+                load = false;
+                DialogResult dr = MessageBox.Show("Podría perder el sudoku generado/cargado previamente. Desea continuar?",
+                                                  "Confirmacion", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                if (dr == DialogResult.Yes)
+                    load = true;
+            }
 
+            if (load)
+            {
+                //load sudoku
+                sldr_size.Enabled = false;
+                btn_generate.Enabled = false;
+                btn_solve.Enabled = true;
+                btn_clear.Enabled = true;
+                btn_save.Enabled = false;
+            }
         }
 
-        //UI Usability
         private void sldr_size_ValueChanged(object sender, EventArgs e)
         {
-            lbl_sizeNum.Text = sldr_size.Value.ToString();
-            Board.Dispose();
-            InitializeBoard(sldr_size.Value);
-            Refresh();
+            if (!UIThread.IsBusy)
+            {
+                sldr_size.Enabled = false;
+                btn_generate.Enabled = false;
+                lbl_sizeNum.Text = sldr_size.Value.ToString();
+                Board.Dispose();
+                int dimension = sldr_size.Value;
+                UIThread.RunWorkerAsync(argument: dimension);
+                Refresh();
+            }
+            else
+                UIThread.CancelAsync();
         }
 
         private void sldr_thread_ValueChanged(object sender, EventArgs e)

@@ -35,12 +35,17 @@ namespace AA_Proyecto2
             ResumeLayout();
         }
 
+        private void RegionTest()
+        {
+            foreach (SudokuRegion r in Regions)
+                r.test();
+        }
         private void ArrangeSetup()
         {
             switch (Dimension)
             {
                 case (5):
-                    Arrange_5x5(); //WIP
+                    Arrange_5x5();
                     break;
                 case (6):
                     Arrange_6x6();
@@ -85,63 +90,102 @@ namespace AA_Proyecto2
                     Arrange_19x19(); //WIP
                     break;
             }
-            /*
-            if (CellGrid[0, 0] != null)
-                Tetrominos.Add(new Tetromino(this, 0, 0));
+            //RegionTest();
+
+            //Region Console test
             /*
             for (int i = 0; i < Dimension; i++)
                 Console.WriteLine(i + " " + Regions[i].ToString());
+            
+            //*///Tetromino test
+            /*
+            if (CellGrid[0, 0] != null) {
+                Tetromino t = new Tetromino(this, 0, 0);
+                Tetrominos.Add(t);
+            }
             //*/
         }
 
-        private void Arrange_5x5()
-        {
-            int RegionSpacerV = Spacer,
-                RegionSpacerH = Spacer;
-            for (int i = 0; i < Dimension; i++)
-            {
-                if (i == 0)
-                    RegionSpacerV = Spacer;
-                else if (i % 2 == 0)
-                    RegionSpacerV += Spacer;
+		private void Arrange_5x5()
+		{
+			int RegionSpacerV = Spacer,
+				RegionSpacerH = Spacer,
+				SelectedRegion = 0;
+			for (int i = 0; i < Dimension; i++)
+			{
+                SelectedRegion = 0;
+                if (i >= 2)
+                    SelectedRegion = 3;
 
-                for (int j = 0; j < Dimension; j++)
-                {
-                    if (j == 0)
-                        RegionSpacerH = Spacer;
-                    
-                    switch(i)
-                    {
-                        case 0:
-                            if (j == 3)
+				for (int j = 0; j < Dimension; j++)
+				{
+					if (j == 0)
+						RegionSpacerH = Spacer;
+					switch(i)
+					{
+						case 0:
+                            if (j == 3) {
+                                RegionSpacerH += Spacer * 2;
+                                SelectedRegion = 1;
+                            }
+							AddCell(i, j, RegionSpacerH, RegionSpacerV);
+							break;
+
+						case 1:
+                            if (j == 2 || j == 3) {
                                 RegionSpacerH += Spacer;
-                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                            break;
-                        case 1:
-                            if (j == 2 || j == 3)
+                                SelectedRegion = j;
+                                if (j == 3)
+                                    SelectedRegion -= 2;
+                            }
+							if (j == 2)
+								AddCell(i, j, RegionSpacerH, RegionSpacerV + Spacer);
+							else
+								AddCell(i, j, RegionSpacerH, RegionSpacerV);
+							break;
+
+						case 2:
+                            if (j == 1 || j == 4) {
                                 RegionSpacerH += Spacer;
-                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                            break;
-                        case 2:
-                            if (j == 1 || j == 4)
+                                SelectedRegion--;
+                            }
+							if (j == 0)
+								AddCell(i, j, RegionSpacerH, RegionSpacerV + Spacer*2);
+
+							else if (j == 4)
+								AddCell(i, j, RegionSpacerH, RegionSpacerV);
+
+							else
+								AddCell(i, j, RegionSpacerH, RegionSpacerV + Spacer);
+							break;
+
+						case 3:
+                            if (j == 2 || j == 3) {
                                 RegionSpacerH += Spacer;
-                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                            break;
-                        case 3:
-                            if (j == 2 || j == 3)
-                                RegionSpacerH += Spacer;
-                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                            break;
-                        case 4:
-                            if (j == 2)
-                                RegionSpacerH += Spacer;
-                            AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                            break;
-                    }
+                                SelectedRegion = j;
+                                if (j == 3)
+                                    SelectedRegion++;
+                            }
+
+							if (j == 2)
+								AddCell(i, j, RegionSpacerH, RegionSpacerV + Spacer);
+							else
+								AddCell(i, j, RegionSpacerH, RegionSpacerV + Spacer*2);
+							break;
+
+						case 4:
+                            if (j == 2) {
+                                RegionSpacerH += Spacer * 2;
+                                SelectedRegion++;
+                            }
+							AddCell(i, j, RegionSpacerH, RegionSpacerV + Spacer*2);
+							break;
+					}
+                    Regions[SelectedRegion].AddCell(CellGrid[i, j]);
                 }
             }
-            Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 4);
-        }
+			Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 4);
+		}
 
         private void Arrange_6x6()
         {
@@ -170,7 +214,12 @@ namespace AA_Proyecto2
 
         private void Arrange_7x7()
         {
-            Size = new Size(CellSize * Dimension + Spacer * 8, CellSize * Dimension + Spacer * 8);
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                    AddCell(i, j, Spacer, Spacer);
+            }
+            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
 
         private void Arrange_8x8()
@@ -192,9 +241,7 @@ namespace AA_Proyecto2
                         RegionSpacerH += Spacer;
 
                     AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                    //CellGrid[i, j].SetNumber(i);
-                    //CellGrid[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                    Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 3, CellSize * Dimension + Spacer * 5);
@@ -219,10 +266,8 @@ namespace AA_Proyecto2
                         RegionSpacerH += Spacer;
 
                     AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                    //CellGrid[i, j].SetNumber(i);
-                    //CellGrid[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
-                    ;                }
+                    Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                }
             }
             Size = new Size(CellSize * Dimension + Spacer*4, CellSize * Dimension + Spacer*4);
         }
@@ -246,9 +291,7 @@ namespace AA_Proyecto2
                         RegionSpacerH += Spacer;
 
                     AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                    //CellGrid[i, j].SetNumber(i);
-                    //CellGrid[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                    Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 3, CellSize * Dimension + Spacer * 6);
@@ -256,7 +299,12 @@ namespace AA_Proyecto2
 
         private void Arrange_11x11()
         {
-            Size = new Size(CellSize * Dimension + Spacer * 12, CellSize * Dimension + Spacer * 12);
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                    AddCell(i, j, Spacer, Spacer);
+            }
+            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
 
         private void Arrange_12x12()
@@ -278,9 +326,7 @@ namespace AA_Proyecto2
                         RegionSpacerH += Spacer;
 
                     AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                    //CellGrid[i, j].SetNumber(i);
-                    //CellGrid[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                    Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 5);
@@ -288,7 +334,12 @@ namespace AA_Proyecto2
 
         private void Arrange_13x13()
         {
-            Size = new Size(CellSize * Dimension + Spacer * 10, CellSize * Dimension + Spacer * 10);
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                    AddCell(i, j, Spacer, Spacer);
+            }
+            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
 
         private void Arrange_14x14()
@@ -310,9 +361,7 @@ namespace AA_Proyecto2
                         RegionSpacerH += Spacer;
 
                     AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                    //CellGrid[i, j].SetNumber(i);
-                    //CellGrid[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                    Regions[(RegionSpacerH / Spacer - 1) + 2*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 3, CellSize * Dimension + Spacer * 8);
@@ -337,9 +386,7 @@ namespace AA_Proyecto2
                         RegionSpacerH += Spacer;
 
                     AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                    //CellGrid[i, j].SetNumber(i);
-                    //CellGrid[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                    Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 6);
@@ -363,9 +410,8 @@ namespace AA_Proyecto2
                     else if (j % 4 == 0)
                         RegionSpacerH += Spacer;
 
-                    AddCell(i, j, RegionSpacerH, RegionSpacerV);                    //CellGrid[i, j].SetNumber(i);
-                    //CellGrid[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 4*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                    AddCell(i, j, RegionSpacerH, RegionSpacerV);
+                    Regions[(RegionSpacerH / Spacer - 1) + 4*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 5, CellSize * Dimension + Spacer * 5);
@@ -373,7 +419,12 @@ namespace AA_Proyecto2
 
         private void Arrange_17x17()
         {
-            Size = new Size(CellSize * Dimension + Spacer * 18, CellSize * Dimension + Spacer * 18);
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                    AddCell(i, j, Spacer, Spacer);
+            }
+            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
 
         private void Arrange_18x18()
@@ -395,9 +446,7 @@ namespace AA_Proyecto2
                         RegionSpacerH += Spacer;
 
                     AddCell(i, j, RegionSpacerH, RegionSpacerV);
-                    //CellGrid[i, j].SetNumber(i);
-                    //CellGrid[i, j].SetResult(j);
-                    //Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
+                    Regions[(RegionSpacerH / Spacer - 1) + 3*(RegionSpacerV / Spacer - 1)].AddCell(CellGrid[i, j]);
                 }
             }
             Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 7);
@@ -405,7 +454,12 @@ namespace AA_Proyecto2
 
         private void Arrange_19x19()
         {
-            Size = new Size(CellSize * Dimension + Spacer * 16, CellSize * Dimension + Spacer * 18);
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                    AddCell(i, j, Spacer, Spacer);
+            }
+            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
 
         private void AddCell(int Row, int Column, int RegionSpacerH, int RegionSpacerV)

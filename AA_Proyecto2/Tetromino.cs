@@ -167,8 +167,9 @@ namespace AA_Proyecto2
             return NumberFound;
         }
 
-        private Color PickColor()
+        public static Color PickColor()
         {
+            System.Threading.Thread.Sleep(50);
             Random rand = new Random();
             int max = byte.MaxValue + 1,
                 min = max / 2;
