@@ -7,58 +7,206 @@ namespace AA_Proyecto2
 {
     public class Tetromino
     {
-        public enum Shape {O, I, J, L, S, T, Z};
+        public enum TetroShape {O, I, J, L, S, T, Z, Dot};
         public enum Orientation {Left, Up, Right, Down};
 
         private int Result;
+        private TetroShape Shape;
+        private Orientation Direction;
+        private string Mode;
         private SudokuCell[] Cells;
         private int Length { get; set; } = 0;
-        private Color color;
-
-        public bool isFull() { return Length == 4; }
+        private readonly Color color;
         
+        public string GetShape()
+        {
+            string strOut =  "";
+            switch(Shape)
+            {
+                case (TetroShape.O):
+                    strOut = "O";
+                    break;
+                case (TetroShape.I):
+                    strOut = "I";
+                    break;
+                case (TetroShape.J):
+                    strOut = "J";
+                    break;
+                case (TetroShape.L):
+                    strOut = "L";
+                    break;
+                case (TetroShape.S):
+                    strOut = "S";
+                    break;
+                case (TetroShape.T):
+                    strOut = "T";
+                    break;
+                case (TetroShape.Z):
+                    strOut = "Z";
+                    break;
+                case (TetroShape.Dot):
+                    strOut = "D";
+                    break;
+            }
+            return strOut;
+        }
+        public void SetShape(string strShape)
+        {
+            switch(strShape)
+            {
+                case ("O"):
+                    Shape = TetroShape.O;
+                    break;
+                case ("I"):
+                    Shape = TetroShape.I;
+                    break;
+                case ("J"):
+                    Shape = TetroShape.J;
+                    break;
+                case ("L"):
+                    Shape = TetroShape.L;
+                    break;
+                case ("S"):
+                    Shape = TetroShape.S;
+                    break;
+                case ("T"):
+                    Shape = TetroShape.T;
+                    break;
+                case ("Z"):
+                    Shape = TetroShape.Z;
+                    break;
+                case ("D"):
+                    Shape = TetroShape.Dot;
+                    break;
+            }
+        }
+
+        public string GetDirection()
+        {
+            string strOut = "";
+            switch(Direction)
+            {
+                case (Orientation.Left):
+                    strOut = "L";
+                    break;
+                case (Orientation.Up):
+                    strOut = "U";
+                    break;
+                case (Orientation.Right):
+                    strOut = "R";
+                    break;
+                case (Orientation.Down):
+                    strOut = "D";
+                    break;
+            }
+            return strOut;
+        }
+        public void SetDirection(string strDirection)
+        {
+            switch(strDirection)
+            {
+                case ("L"):
+                    Direction = Orientation.Left;
+                    break;
+                case ("U"):
+                    Direction = Orientation.Up;
+                    break;
+                case ("R"):
+                    Direction = Orientation.Right;
+                    break;
+                case ("D"):
+                    Direction = Orientation.Down;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        /// <param name="Board"></param>
+        /// <param name="Row"></param>
+        /// <param name="Column"></param>
         public Tetromino(Sudoku Board, int Row, int Column)
         {
             Cells = new SudokuCell[4];
             color = PickColor();
             Random r = new Random();
             Result = r.Next(2);
-            Shape newShape;
+            List<TetroShape> ShapeTries = new List<TetroShape>(); 
             while (Length < 4)
             {
-                newShape = (Shape) r.Next(2);
-                switch (newShape)
+                if (ShapeTries.Count < 7)
                 {
-                    case (Shape.O):
-                        Arrange_O(Board, Row, Column);
-                        break;
+                    Shape = (TetroShape)r.Next(2);
+                    switch (Shape)
+                    {
+                        case (TetroShape.O):
+                            Arrange_O(Board, Row, Column);
+                            break;
 
-                    case (Shape.I):
-                        Arrange_I(Board, Row, Column);
-                        break;
+                        case (TetroShape.I):
+                            Arrange_I(Board, Row, Column);
+                            break;
 
-                    case (Shape.J):
-                        Arrange_J(Board, Row, Column); //WIP
-                        break;
+                        case (TetroShape.J):
+                            Arrange_J(Board, Row, Column); //WIP
+                            break;
 
-                    case (Shape.L):
-                        Arrange_L(Board, Row, Column); //WIP
-                        break;
+                        case (TetroShape.L):
+                            Arrange_L(Board, Row, Column); //WIP
+                            break;
 
-                    case (Shape.S):
-                        Arrange_S(Board, Row, Column); //WIP
-                        break;
+                        case (TetroShape.S):
+                            Arrange_S(Board, Row, Column); //WIP
+                            break;
 
-                    case (Shape.T):
-                        Arrange_T(Board, Row, Column); //WIP
-                        break;
+                        case (TetroShape.T):
+                            Arrange_T(Board, Row, Column); //WIP
+                            break;
 
-                    case (Shape.Z):
-                        Arrange_Z(Board, Row, Column); //WIP
-                        break;
+                        case (TetroShape.Z):
+                            Arrange_Z(Board, Row, Column); //WIP
+                            break;
+                    }
+                    ShapeTries.Add(Shape);
+                }
+                else {
+                    Shape = TetroShape.Dot;
+                    Cells = new SudokuCell[1];
+                    Length = 1;
+                    AddCell(Board.GetCellAt(Row, Column));
+                    break;
                 }
             }
             AssignResult();
+        }
+
+        /// <summary>
+        /// Constructor from String (Sudoku Load)
+        /// </summary>
+        /// <param name="Board"></param>
+        /// <param name="strInfo"></param>
+        public Tetromino(Sudoku Board, string strInfo)
+        {
+            //strInfo = 0[Shape] - 1[Direction] - 2[Mode] - 3[Result] - +4[Cells...] 5 6 7
+            color = PickColor();
+            string[] infoTokens = strInfo.Split(',');
+            SetShape(infoTokens[0]);
+            SetDirection(infoTokens[1]);
+            Mode = infoTokens[2];
+            Result = int.Parse(infoTokens[3]);
+
+            string[] coordinates;
+            int cellNum = infoTokens.Length - 4,
+                Row, Column;
+            Cells = new SudokuCell[cellNum];
+            for (int i = 0; cellNum + i < infoTokens.Length; i++)
+            {
+                coordinates = infoTokens[cellNum + i].Split(',');
+                Row = int.Parse(coordinates[0]);
+                Column = int.Parse(coordinates[1]);
+                AddCell(Board.GetCellAt(Row, Column));
+            }
         }
 
         private void Arrange_O(Sudoku Board, int Row, int Column)
@@ -79,10 +227,10 @@ namespace AA_Proyecto2
 
         private void Arrange_I(Sudoku Board, int Row, int Column)
         {
-            Orientation o = (Orientation) new Random().Next(2);
+            Direction = (Orientation) new Random().Next(2);
             try
             {
-                if (o == Orientation.Left)
+                if (Direction == Orientation.Left)
                 {
                     AddCell(Board.GetCellAt(Row, Column));
                     AddCell(Board.GetCellAt(Row, Column + 1));
@@ -145,12 +293,18 @@ namespace AA_Proyecto2
         private void AssignResult()
         {
             if (Result == 0)
+            {
+                Mode = "+";
                 foreach (SudokuCell Cell in Cells)
-                    Result += Cell.Answer;
+                    Result += Cell.GetNumber();
+            }
             else
+            {
+                Mode = "x";
                 foreach (SudokuCell Cell in Cells)
-                    Result *= Cell.Answer;
-            Cells[0].SetResult(Result);
+                    Result *= Cell.GetNumber();
+            }
+            Cells[0].SetResult(Result, Mode);
         }
 
         public bool CheckNumber(int Number)
@@ -177,6 +331,21 @@ namespace AA_Proyecto2
             int g = rand.Next(min, max);
             int b = rand.Next(min, max);
             return Color.FromArgb(r, g, b);
+        }
+
+        public override string ToString()
+        {
+            string strOut = GetShape() + "-" + GetDirection() + "-" + Mode + "-" + Result.ToString() + "-";
+            SudokuCell cell;
+            for (int i = 0; i < Length; i++)
+            {
+                cell = Cells[i];
+                strOut += cell.Row.ToString() + "," + cell.Column.ToString();
+                if (i != Length - 1)
+                    strOut += "-";
+            }
+            return strOut;
+            //Output = [Shape]-[Direction]-[Mode]-[Result]-[Cells...]
         }
     }
 }

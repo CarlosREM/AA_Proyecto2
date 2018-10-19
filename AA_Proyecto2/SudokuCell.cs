@@ -11,12 +11,12 @@ namespace AA_Proyecto2
 {
     public partial class SudokuCell : Panel
     {
-        public int Answer = 0;
+        public bool Locked = false;
         private int Number { get; set; } = 0;
         private int Result { get; set; } = 0;
 
-        private int Row { get; set; }
-        private int Column { get; set; }
+        public int Row { get; set; }
+        public int Column { get; set; }
 
         public SudokuRegion sRegion = null;
         public Tetromino sTetro = null;
@@ -27,15 +27,16 @@ namespace AA_Proyecto2
         public int GetNumber() { return Number; }
         public void SetNumber(int pNumber)
         {
-            Number = pNumber;
-            Lbl_Number.Text = Number.ToString();
-        }
+			Number = pNumber;
+			Lbl_Number.Text = Number.ToString();
+			Lbl_Number.Visible = (Number > 0);
+		}
 
         public int GetResult() { return Result; }
-        public void SetResult(int pResult)
+        public void SetResult(int pResult, string pMode)
         {
             Result = pResult;
-            Lbl_Result.Text = Result.ToString();
+            Lbl_Result.Text = pMode + Result.ToString();
             Lbl_Result.Visible = true;
         }
 

@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AppWin));
             this.pnl_options = new System.Windows.Forms.Panel();
             this.btn_solve = new System.Windows.Forms.Button();
-            this.btn_clear = new System.Windows.Forms.Button();
+            this.btn_reset = new System.Windows.Forms.Button();
             this.btn_about = new System.Windows.Forms.Button();
             this.btn_useThreads = new System.Windows.Forms.CheckBox();
             this.btn_load = new System.Windows.Forms.Button();
@@ -54,7 +54,7 @@
             this.pnl_options.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.pnl_options.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnl_options.Controls.Add(this.btn_solve);
-            this.pnl_options.Controls.Add(this.btn_clear);
+            this.pnl_options.Controls.Add(this.btn_reset);
             this.pnl_options.Controls.Add(this.btn_about);
             this.pnl_options.Controls.Add(this.btn_useThreads);
             this.pnl_options.Controls.Add(this.btn_load);
@@ -89,21 +89,21 @@
             this.btn_solve.UseVisualStyleBackColor = false;
             this.btn_solve.Click += new System.EventHandler(this.btn_solve_Click);
             // 
-            // btn_clear
+            // btn_reset
             // 
-            this.btn_clear.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btn_clear.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.btn_clear.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_clear.Enabled = false;
-            this.btn_clear.Font = new System.Drawing.Font("Corbel", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_clear.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btn_clear.Location = new System.Drawing.Point(9, 495);
-            this.btn_clear.Name = "btn_clear";
-            this.btn_clear.Size = new System.Drawing.Size(190, 45);
-            this.btn_clear.TabIndex = 13;
-            this.btn_clear.Text = "Clear Board";
-            this.btn_clear.UseVisualStyleBackColor = false;
-            this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
+            this.btn_reset.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btn_reset.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.btn_reset.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_reset.Enabled = false;
+            this.btn_reset.Font = new System.Drawing.Font("Corbel", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_reset.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btn_reset.Location = new System.Drawing.Point(9, 495);
+            this.btn_reset.Name = "btn_reset";
+            this.btn_reset.Size = new System.Drawing.Size(190, 45);
+            this.btn_reset.TabIndex = 13;
+            this.btn_reset.Text = "Reset Board";
+            this.btn_reset.UseVisualStyleBackColor = false;
+            this.btn_reset.Click += new System.EventHandler(this.btn_reset_Click);
             // 
             // btn_about
             // 
@@ -270,10 +270,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(822, 633);
+            this.ClientSize = new System.Drawing.Size(712, 633);
             this.Controls.Add(this.pnl_options);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(840, 680);
+            this.MinimumSize = new System.Drawing.Size(730, 680);
             this.Name = "AppWin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Proyecto 2 - Killer Sudoku";
@@ -300,7 +300,7 @@
         private System.Windows.Forms.Label lbl_sizeNum;
         private System.Windows.Forms.CheckBox btn_useThreads;
         private System.Windows.Forms.Button btn_about;
-        private System.Windows.Forms.Button btn_clear;
+        private System.Windows.Forms.Button btn_reset;
         private System.Windows.Forms.Button btn_solve;
     }
 }

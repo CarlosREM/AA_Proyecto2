@@ -53,7 +53,7 @@ namespace AA_Proyecto2
             sldr_size.Enabled = false;
             btn_generate.Enabled = false;
             btn_solve.Enabled = true;
-            btn_clear.Enabled = true;
+            btn_reset.Enabled = true;
             btn_save.Enabled = true;
         }
 
@@ -62,30 +62,40 @@ namespace AA_Proyecto2
 
         }
 
-        private void btn_clear_Click(object sender, EventArgs e)
+        //Done
+        private void btn_reset_Click(object sender, EventArgs e)
         {
-            int dimension = sldr_size.Value;
-            //generate new sudoku
-            sldr_size.Enabled = true;
-            btn_generate.Enabled = true;
-            btn_solve.Enabled = false;
-            btn_clear.Enabled = false;
-            btn_save.Enabled = false;
+            DialogResult dr = MessageBox.Show("Perderá el sudoku generado/cargado actualmente. Desea continuar?",
+                                  "Confirmacion - Limpiar Pantalla", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+            if (dr == DialogResult.Yes)
+            {
+                Board.Dispose();
+                int dimension = sldr_size.Value;
+                UIThread.RunWorkerAsync(argument: dimension);
+                Refresh();
+                sldr_size.Enabled = true;
+                btn_generate.Enabled = true;
+                btn_solve.Enabled = false;
+                btn_reset.Enabled = false;
+                btn_save.Enabled = false;
+            }
         }
 
         private void btn_save_Click(object sender, EventArgs e)
         {
-
+            string fileName = SudokuFileHandler.SaveSudoku(Board.ToString());
+            MessageBox.Show("Guardado como \""+fileName+"\" en el directorio \"saves\" del proyecto",
+                            "Guardar Killer Sudoku", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btn_load_Click(object sender, EventArgs e)
         {
             bool load = true;
-            if (btn_clear.Enabled)
+            if (btn_reset.Enabled)
             {
                 load = false;
-                DialogResult dr = MessageBox.Show("Podría perder el sudoku generado/cargado previamente. Desea continuar?",
-                                                  "Confirmacion", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                DialogResult dr = MessageBox.Show("Perderá el sudoku generado/cargado actualmente. Desea continuar?",
+                                                  "Confirmacion - Cargar Sudoku", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                 if (dr == DialogResult.Yes)
                     load = true;
             }
@@ -93,10 +103,12 @@ namespace AA_Proyecto2
             if (load)
             {
                 //load sudoku
+
+
                 sldr_size.Enabled = false;
                 btn_generate.Enabled = false;
                 btn_solve.Enabled = true;
-                btn_clear.Enabled = true;
+                btn_reset.Enabled = true;
                 btn_save.Enabled = false;
             }
         }

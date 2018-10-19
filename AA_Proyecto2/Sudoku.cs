@@ -11,15 +11,16 @@ namespace AA_Proyecto2
 {
     public partial class Sudoku : Panel
     {
+        private const int CellSize = 35;
+        private const int Spacer = 5;
+
         private SudokuCell[,] CellGrid;
         private SudokuRegion[] Regions;
         private List<Tetromino> Tetrominos;
         private int Dimension;
 
-        private const int CellSize = 35;
-        private const int Spacer = 5;
-
         public SudokuCell GetCellAt(int Row, int Column) { return CellGrid[Row, Column]; }
+        public void SetCellAt(int Row, int Column, int Number) { CellGrid[Row, Column].SetNumber(Number); }
 
         public Sudoku(int pDimension)
         {
@@ -98,7 +99,7 @@ namespace AA_Proyecto2
                 Console.WriteLine(i + " " + Regions[i].ToString());
             
             //*///Tetromino test
-            /*
+            
             if (CellGrid[0, 0] != null) {
                 Tetromino t = new Tetromino(this, 0, 0);
                 Tetrominos.Add(t);
@@ -502,6 +503,27 @@ namespace AA_Proyecto2
                 }
             }
             return result;
+        }
+
+        override public string ToString()
+        {
+            string strOut = Dimension.ToString() + "\n-\n";
+
+            for (int i = 0; i < Dimension; i++)
+            {
+                for (int j = 0; j < Dimension; j++)
+                {
+                    strOut += CellGrid[i, j].GetNumber().ToString();
+                    if (j < Dimension - 1)
+                        strOut += ",";
+                }
+                strOut += "\n";
+            }
+            strOut += "-\n";
+            foreach (Tetromino t in Tetrominos)
+                strOut += t.ToString() + "\n";
+            strOut = strOut.TrimEnd('\n');
+            return strOut;
         }
     }
 }
