@@ -14,10 +14,10 @@ namespace AA_Proyecto2
         private const int CellSize = 35;
         private const int Spacer = 5;
 
-        private SudokuCell[,] CellGrid;
-        private SudokuRegion[] Regions;
-        private List<Tetromino> Tetrominos;
         private int Dimension;
+        private SudokuCell[,] CellGrid;
+        public SudokuRegion[] Regions;
+        public List<Tetromino> Tetrominos;
 
         public SudokuCell GetCellAt(int Row, int Column) { return CellGrid[Row, Column]; }
         public void SetCellAt(int Row, int Column, int Number) { CellGrid[Row, Column].SetNumber(Number); }
@@ -99,7 +99,7 @@ namespace AA_Proyecto2
                 Console.WriteLine(i + " " + Regions[i].ToString());
             
             //*///Tetromino test
-            
+            /*
             if (CellGrid[0, 0] != null) {
                 Tetromino t = new Tetromino(this, 0, 0);
                 Tetrominos.Add(t);

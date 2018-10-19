@@ -190,7 +190,7 @@ namespace AA_Proyecto2
         {
             //strInfo = 0[Shape] - 1[Direction] - 2[Mode] - 3[Result] - +4[Cells...] 5 6 7
             color = PickColor();
-            string[] infoTokens = strInfo.Split(',');
+            string[] infoTokens = strInfo.Split('-');
             SetShape(infoTokens[0]);
             SetDirection(infoTokens[1]);
             Mode = infoTokens[2];

@@ -44,6 +44,7 @@
             this.sp1 = new System.Windows.Forms.Label();
             this.lbl_size = new System.Windows.Forms.Label();
             this.lbl_options = new System.Windows.Forms.Label();
+            this.lbl_timer = new System.Windows.Forms.Label();
             this.pnl_options.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sldr_thread)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sldr_size)).BeginInit();
@@ -265,12 +266,24 @@
             this.lbl_options.Text = "Options";
             this.lbl_options.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lbl_timer
+            // 
+            this.lbl_timer.AutoSize = true;
+            this.lbl_timer.Font = new System.Drawing.Font("Courier New", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_timer.ForeColor = System.Drawing.Color.SaddleBrown;
+            this.lbl_timer.Location = new System.Drawing.Point(240, 10);
+            this.lbl_timer.Name = "lbl_timer";
+            this.lbl_timer.Size = new System.Drawing.Size(199, 20);
+            this.lbl_timer.TabIndex = 1;
+            this.lbl_timer.Text = "Timer - 00:00:00.00";
+            // 
             // AppWin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(712, 633);
+            this.Controls.Add(this.lbl_timer);
             this.Controls.Add(this.pnl_options);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(730, 680);
@@ -282,6 +295,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.sldr_thread)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sldr_size)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -302,6 +316,7 @@
         private System.Windows.Forms.Button btn_about;
         private System.Windows.Forms.Button btn_reset;
         private System.Windows.Forms.Button btn_solve;
+        private System.Windows.Forms.Label lbl_timer;
     }
 }
 
