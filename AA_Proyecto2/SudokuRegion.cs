@@ -10,6 +10,10 @@ namespace AA_Proyecto2
         private SudokuCell[] Region;
         private int Length { get; set; } = 0;
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        /// <param name="Dimension"></param>
         public SudokuRegion(int Dimension)
         {
             Region = new SudokuCell[Dimension];
@@ -25,6 +29,10 @@ namespace AA_Proyecto2
             }
         }
 
+        /// <summary>
+        /// Adds a cell to the Region Array
+        /// </summary>
+        /// <param name="NewCell"></param>
         public void AddCell(SudokuCell NewCell)
         {
             if (Length < Region.Length)
@@ -35,6 +43,11 @@ namespace AA_Proyecto2
             }
         }
 
+        /// <summary>
+        /// Checks for an existing number in the region
+        /// </summary>
+        /// <param name="Number"></param>
+        /// <returns></returns>
         public Boolean CheckNumber(int Number)
         {
             bool NumberFound = false;

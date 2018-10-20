@@ -14,25 +14,23 @@ namespace AA_Proyecto2
     public partial class AppWin : Form
     {
         private Sudoku Board { get; set; }
-        private bool WatchRun = false;
-        private System.Timers.Timer Watch;
-        private BackgroundWorker TimerThread,
-                                 UIThread;
+        private BackgroundWorker UIThread;
 
+        private Stopwatch Watch;
+        private BackgroundWorker TimerThread;
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public AppWin()
         {
             InitializeComponent();
 
-            /* TIMER STUFF
-            Watch = new System.Timers.Timer();
-            Watch.Interval = 10;
-            Watch.Elapsed += Watch_Elapsed;
-
             TimerThread = new BackgroundWorker();
             TimerThread.WorkerReportsProgress = true;
-            TimerThread.DoWork += RunStopwatch;
+            TimerThread.DoWork += Start_Watch;
             TimerThread.ProgressChanged += UpdateWatchLabel;
-            */
+            
 
             UIThread = new BackgroundWorker();
             UIThread.WorkerSupportsCancellation = true;
@@ -43,13 +41,22 @@ namespace AA_Proyecto2
             Controls.Add(Board);
         }
 
+        /// <summary>
+        /// Initializes Sudoku Board on executing UIThread.RunWorkerAsync, accepts the dimension as argument on 'e'
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Th_InitializeBoard(object sender, DoWorkEventArgs e)
         {
-            //Thread.Sleep(100);
             int dimension = (int) e.Argument;
             InitializeBoard(dimension);
         }
 
+        /// <summary>
+        /// Adds the Sudoku Board to the UI, then reenables the controls disabled on dimension-changing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Th_AddBoard(object sender, RunWorkerCompletedEventArgs e)
         {
             Controls.Add(Board);
@@ -57,6 +64,10 @@ namespace AA_Proyecto2
             btn_generate.Enabled = true;
         }
 
+        /// <summary>
+        /// Constructs and places the Sudoku Board based on the 'dimension' parameter
+        /// </summary>
+        /// <param name="Dimension"></param>
         private void InitializeBoard(int Dimension)
         {
             Board = new Sudoku(Dimension);
@@ -64,7 +75,11 @@ namespace AA_Proyecto2
             Board.Name = "Board";
         }
 
-        //UI Usability
+        /// <summary>
+        /// Disables user control, then generates the Numbers and tetrominos on the Sudoku Board
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_generate_Click(object sender, EventArgs e)
         {
             sldr_size.Enabled = false;
@@ -73,25 +88,39 @@ namespace AA_Proyecto2
             btn_reset.Enabled = true;
             btn_save.Enabled = true;
 
-            //TimerThread.RunWorkerAsync();
+            Start_Watch();
+            // generate sudoku, execute Stop_Watch() on end
         }
 
+        /// <summary>
+        /// Solves the generated Sudoku Board
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_solve_Click(object sender, EventArgs e)
         {
-
+            Start_Watch();
+            // solve sudoku, execute Stop_Watch() on end
         }
 
-        //Done
+        /// <summary>
+        /// Resets  or clears the Sudoku Board
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_reset_Click(object sender, EventArgs e)
         {
             DialogResult dr = MessageBox.Show("Perderá el sudoku generado/cargado actualmente. Desea continuar?",
                                   "Confirmacion - Limpiar Pantalla", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
             if (dr == DialogResult.Yes)
             {
+                Reset_Watch();
+
                 Board.Dispose();
                 int dimension = sldr_size.Value;
                 UIThread.RunWorkerAsync(argument: dimension);
                 Refresh();
+
                 sldr_size.Enabled = true;
                 btn_generate.Enabled = true;
                 btn_solve.Enabled = false;
@@ -100,6 +129,11 @@ namespace AA_Proyecto2
             }
         }
 
+        /// <summary>
+        /// Saves the Sudoku on display as a .txt file on the 'saves' directory
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_save_Click(object sender, EventArgs e)
         {
             string fileName = SudokuFileHandler.SaveSudoku(Board.ToString());
@@ -107,6 +141,11 @@ namespace AA_Proyecto2
                             "Guardar Killer Sudoku", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        /// Loads a Sudoku based on a .txt with the appropiate format
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_load_Click(object sender, EventArgs e)
         {
             bool load = true;
@@ -129,6 +168,8 @@ namespace AA_Proyecto2
                     btn_solve.Enabled = true;
                     btn_reset.Enabled = true;
                     btn_save.Enabled = false;
+
+                    Reset_Watch();
                 }
                 catch(Exception exc)
                 {
@@ -138,6 +179,11 @@ namespace AA_Proyecto2
             }
         }
 
+        /// <summary>
+        /// Updates the Sudoku Board size based on the selected Dimension
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void sldr_size_ValueChanged(object sender, EventArgs e)
         {
             if (!UIThread.IsBusy)
@@ -159,6 +205,11 @@ namespace AA_Proyecto2
             lbl_threadNum.Text = sldr_thread.Value.ToString();
         }
 
+        /// <summary>
+        /// Enables the sldr_thread control
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_useThreads_CheckedChanged(object sender, EventArgs e)
         {
             if (btn_useThreads.Checked)
@@ -169,6 +220,11 @@ namespace AA_Proyecto2
             lbl_threadNum.Enabled = btn_useThreads.Checked;
         }
 
+        /// <summary>
+        /// Displays a pop-up with the Project and Devs information
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_about_Click(object sender, EventArgs e)
         {
             String info = "IC-3002 - Análisis de Algoritmos, GR 1\n" +
@@ -183,22 +239,42 @@ namespace AA_Proyecto2
             MessageBox.Show(info, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        /* TIMER STUFF
-        private void RunStopwatch(object sender, DoWorkEventArgs e)
+        /// <summary>
+        /// Starts the stopwatch
+        /// </summary>
+        private void Start_Watch()
+        {
+            lbl_timer.ForeColor = Color.ForestGreen;
+            TimerThread.RunWorkerAsync();
+        }
+
+        /// <summary>
+        /// BackgroundWorker function. Runs the stopwatch
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Start_Watch(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker bw = sender as BackgroundWorker;
-            Watch.Start();
+            Watch = Stopwatch.StartNew();
             int ms = 0,
                 oldms = 0;
-            while(ms <= 1000)
+            while (Watch.IsRunning)
             {
-                ms = ((int) 
-                bw.ReportProgress(ms);
-
-                //Dispatcher.Invoke;
+                ms = (int)Watch.ElapsedMilliseconds;
+                if (ms > oldms)
+                {
+                    bw.ReportProgress(ms);
+                    oldms = ms;
+                }
             }
         }
 
+        /// <summary>
+        /// Updates lbl_timer based on the elapsed time on the stopwatch
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpdateWatchLabel(object sender, ProgressChangedEventArgs e)
         {
             TimeSpan t = TimeSpan.FromMilliseconds(e.ProgressPercentage);
@@ -206,11 +282,23 @@ namespace AA_Proyecto2
             lbl_timer.Text = "Timer - " + elapsedTime;
         }
 
-
-        private void UpdateWatchLabel(object sender, System.Timers.ElapsedEventArgs e)
+        /// <summary>
+        /// Stops the stopwatch
+        /// </summary>
+        private void Stop_Watch()
         {
-            e.SignalTime.
+            Watch.Stop();
+            lbl_timer.ForeColor = Color.Red;
         }
-        */
+
+        /// <summary>
+        /// Resets the stopwatch (BUGGED)
+        /// </summary>
+        private void Reset_Watch()
+        {
+            Watch.Reset();
+            lbl_timer.Text = "Timer - 00:00:00.00"; //+ Watch.Elapsed.ToString("hh':'mm':'ss'.'ff");
+            lbl_timer.ForeColor = Color.SaddleBrown;
+        }
     }
 }

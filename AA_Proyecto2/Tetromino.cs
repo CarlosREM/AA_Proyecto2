@@ -13,7 +13,7 @@ namespace AA_Proyecto2
         private int Result;
         private TetroShape Shape;
         private Orientation Direction;
-        private string Mode;
+        private string Mode = "";
         private SudokuCell[] Cells;
         private int Length { get; set; } = 0;
         private readonly Color color;
@@ -137,7 +137,7 @@ namespace AA_Proyecto2
             {
                 if (ShapeTries.Count < 7)
                 {
-                    Shape = (TetroShape)r.Next(2);
+                    Shape = (TetroShape)r.Next(2);//(7);
                     switch (Shape)
                     {
                         case (TetroShape.O):
@@ -182,7 +182,8 @@ namespace AA_Proyecto2
         }
 
         /// <summary>
-        /// Constructor from String (Sudoku Load)
+        /// Constructor from String (Sudoku Load).
+        /// Assigns Attributes based on the formatted string
         /// </summary>
         /// <param name="Board"></param>
         /// <param name="strInfo"></param>
@@ -252,31 +253,36 @@ namespace AA_Proyecto2
             }
         }
 
-        private void Arrange_J(Sudoku Board, int Row, int Column)
+        private void Arrange_J(Sudoku Board, int Row, int Column) //WIP
         {
 
         }
 
-        private void Arrange_L(Sudoku Board, int Row, int Column)
+        private void Arrange_L(Sudoku Board, int Row, int Column) //WIP
         {
 
         }
 
-        private void Arrange_S(Sudoku Board, int Row, int Column)
+        private void Arrange_S(Sudoku Board, int Row, int Column) //WIP
         {
 
         }
 
-        private void Arrange_T(Sudoku Board, int Row, int Column)
+        private void Arrange_T(Sudoku Board, int Row, int Column) //WIP
         {
 
         }
 
-        private void Arrange_Z(Sudoku Board, int Row, int Column)
+        private void Arrange_Z(Sudoku Board, int Row, int Column) //WIP
         {
 
         }
 
+        /// <summary>
+        /// Adds a cell to the Cells Array (to a maximum of 4).
+        /// NewCell.sTetro must return 'null'
+        /// </summary>
+        /// <param name="NewCell"></param>
         public void AddCell(SudokuCell NewCell)
         {
             if (Length < 4 && NewCell.sTetro == null)
@@ -290,23 +296,37 @@ namespace AA_Proyecto2
                 throw new Exception();
         }
 
+        /// <summary>
+        /// Assigns the result for the sum/multiplication on the Tetromino
+        /// and displays it on the upper-leftmost cell (position 0 on the array)
+        /// </summary>
         private void AssignResult()
         {
-            if (Result == 0)
+            if (Length > 1)
             {
-                Mode = "+";
-                foreach (SudokuCell Cell in Cells)
-                    Result += Cell.GetNumber();
+                if (Result == 0)
+                {
+                    Mode = "+";
+                    foreach (SudokuCell Cell in Cells)
+                        Result += Cell.GetNumber();
+                }
+                else
+                {
+                    Mode = "x";
+                    foreach (SudokuCell Cell in Cells)
+                        Result *= Cell.GetNumber();
+                }
             }
             else
-            {
-                Mode = "x";
-                foreach (SudokuCell Cell in Cells)
-                    Result *= Cell.GetNumber();
-            }
+                Result = Cells[0].GetNumber();
             Cells[0].SetResult(Result, Mode);
         }
 
+        /// <summary>
+        /// Checks for an existing number in the Tetromino
+        /// </summary>
+        /// <param name="Number"></param>
+        /// <returns></returns>
         public bool CheckNumber(int Number)
         {
             bool NumberFound = false;

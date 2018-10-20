@@ -22,6 +22,10 @@ namespace AA_Proyecto2
         public SudokuCell GetCellAt(int Row, int Column) { return CellGrid[Row, Column]; }
         public void SetCellAt(int Row, int Column, int Number) { CellGrid[Row, Column].SetNumber(Number); }
 
+        /// <summary>
+        /// Default Constructor.
+        /// </summary>
+        /// <param name="pDimension"></param>
         public Sudoku(int pDimension)
         {
             InitializeComponent();
@@ -36,11 +40,15 @@ namespace AA_Proyecto2
             ResumeLayout();
         }
 
+        /// <summary>
+        /// Tests the region setup on the board. 
+        /// </summary>
         private void RegionTest()
         {
             foreach (SudokuRegion r in Regions)
                 r.test();
         }
+
         private void ArrangeSetup()
         {
             switch (Dimension)
@@ -213,7 +221,7 @@ namespace AA_Proyecto2
             Size = new Size(CellSize * Dimension + Spacer*3, CellSize * Dimension + Spacer*4);
         }
 
-        private void Arrange_7x7()
+        private void Arrange_7x7() //WIP
         {
             for (int i = 0; i < Dimension; i++)
             {
@@ -298,7 +306,7 @@ namespace AA_Proyecto2
             Size = new Size(CellSize * Dimension + Spacer * 3, CellSize * Dimension + Spacer * 6);
         }
 
-        private void Arrange_11x11()
+        private void Arrange_11x11() //WIP
         {
             for (int i = 0; i < Dimension; i++)
             {
@@ -333,7 +341,7 @@ namespace AA_Proyecto2
             Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 5);
         }
 
-        private void Arrange_13x13()
+        private void Arrange_13x13() //WIP
         {
             for (int i = 0; i < Dimension; i++)
             {
@@ -418,7 +426,7 @@ namespace AA_Proyecto2
             Size = new Size(CellSize * Dimension + Spacer * 5, CellSize * Dimension + Spacer * 5);
         }
 
-        private void Arrange_17x17()
+        private void Arrange_17x17() //WIP
         {
             for (int i = 0; i < Dimension; i++)
             {
@@ -453,7 +461,7 @@ namespace AA_Proyecto2
             Size = new Size(CellSize * Dimension + Spacer * 4, CellSize * Dimension + Spacer * 7);
         }
 
-        private void Arrange_19x19()
+        private void Arrange_19x19() //WIP
         {
             for (int i = 0; i < Dimension; i++)
             {
@@ -463,6 +471,13 @@ namespace AA_Proyecto2
             Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
 
+        /// <summary>
+        /// Adds a new SudokuCell control to the Sudoku Layout in its corresponding position
+        /// </summary>
+        /// <param name="Row"></param>
+        /// <param name="Column"></param>
+        /// <param name="RegionSpacerH"></param>
+        /// <param name="RegionSpacerV"></param>
         private void AddCell(int Row, int Column, int RegionSpacerH, int RegionSpacerV)
         {
             CellGrid[Row, Column] = new SudokuCell(Row, Column);
@@ -473,6 +488,12 @@ namespace AA_Proyecto2
             Controls.Add(CellGrid[Row, Column]);
         }
 
+        /// <summary>
+        /// Checks for an existing number on the corresponding row
+        /// </summary>
+        /// <param name="Row"></param>
+        /// <param name="Number"></param>
+        /// <returns></returns>
         public bool CheckRow(int Row, int Number)
         {
             bool result = false;
@@ -489,6 +510,12 @@ namespace AA_Proyecto2
             return result;
         }
 
+        /// <summary>
+        /// Checks for an existing number on the corresponding column
+        /// </summary>
+        /// <param name="Column"></param>
+        /// <param name="Number"></param>
+        /// <returns></returns>
         public bool CheckColumn(int Column, int Number)
         {
             bool result = false;
@@ -524,6 +551,23 @@ namespace AA_Proyecto2
                 strOut += t.ToString() + "\n";
             strOut = strOut.TrimEnd('\n');
             return strOut;
+        }
+
+        /// <summary>
+        /// Sets to 0 (empties) any cell on the Sudoku that is not Locked
+        /// </summary>
+        public void Clear()
+        {
+            for  (int row = 0; row < Dimension; row++)
+            {
+                for (int col = 0; col < Dimension; col++)
+                {
+                    if (!CellGrid[row, col].Locked)
+                    {
+                        CellGrid[row, col].SetNumber(0);
+                    }
+                }
+            }
         }
     }
 }

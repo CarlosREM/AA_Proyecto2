@@ -12,7 +12,15 @@ namespace AA_Proyecto2
     public partial class SudokuCell : Panel
     {
         public bool Locked = false;
+
+        /// <summary>
+        /// Number on the center of the Cell
+        /// </summary>
         private int Number { get; set; } = 0;
+
+        /// <summary>
+        /// Number on the corner of the Cell
+        /// </summary>
         private int Result { get; set; } = 0;
 
         public int Row { get; set; }
@@ -40,6 +48,11 @@ namespace AA_Proyecto2
             Lbl_Result.Visible = true;
         }
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        /// <param name="pRow"></param>
+        /// <param name="pColumn"></param>
         public SudokuCell(int pRow, int pColumn)
         {
             Row = pRow;
