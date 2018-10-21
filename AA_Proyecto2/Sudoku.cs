@@ -510,124 +510,64 @@ namespace AA_Proyecto2
         }
 
         /// <summary>
-        /// Checks for an existing number on the corresponding row
-        /// </summary>
-        /// <param name="Row"></param>
-        /// <param name="Number"></param>
-        /// <returns></returns>
-        public bool CheckRow(int Row, int Number)
-        {
-            bool result = false;
-            SudokuCell Cell;
-            for (int Column = 0; Column < Dimension; Column++)
-            {
-                Cell = CellGrid[Row, Column];
-                if (Cell.GetNumber() == Number)
-                {
-                    result = true;
-                    break;
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Checks for an existing number on the corresponding column
-        /// </summary>
-        /// <param name="Column"></param>
-        /// <param name="Number"></param>
-        /// <returns></returns>
-        public bool CheckColumn(int Column, int Number)
-        {
-            bool result = false;
-            SudokuCell Cell;
-            for (int Row = 0; Row < Dimension; Row++)
-            {
-                Cell = CellGrid[Row, Column];
-                if (Cell.GetNumber() == Number)
-                {
-                    result = true;
-                    break;
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Checks for an existing number on the corresponding column and row looking for repeats, if none found, inserts v in that possition
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="v"></param>
-        /// <returns></returns>
-        public bool checkValue(int v, int x, int y)
-        {
-            for (int i = 0; i < Dimension; i++)
-            {
-                if (CellGrid[i, y].GetNumber() == v || CellGrid[x, i].GetNumber() == v)
-                    return false;
-            }
-            CellGrid[x, y].SetNumber(v);
-            return true;
-        }
-
-        /// <summary>
-        /// generates a random killer sudoku board
+        /// Generates a Random killer sudoku board
         /// </summary>
         /// <returns></returns>
 
-        public void generateBoard()
+        public void GenerateBoard()
         {
-            double size = (double)Dimension;
             //ArrayList<Section> parts = new ArrayList<>();
             int[,] template = new int[Dimension, Dimension];
-            bool checker = false;
-            bool complete = false;
-            Random generate = new Random();
-
-
+            bool acceptedValue = false,
+                 complete = false;
+            Random randNumGen = new Random();
+            int counter, newNumber;
             while (!complete)
             {
-                int contador = 0;
-
+                counter = 0;
                 for (int i = 0; i < Dimension; i++)
                 {
                     for (int j = 0; j < Dimension; j++)
                     {
-                        while (!checker && contador < 2 * Math.Pow(10, size))
+                        while (!acceptedValue && counter < 2 * Math.Pow(10, Dimension))
                         {
-                            int generado = generate.Next(Dimension + 1);
-
-                            checker = checkValue(generado, i, j);
-
-
-                            contador++;
+                            newNumber = randNumGen.Next(Dimension) + 1;
+                            acceptedValue = CheckValue(newNumber, i, j);
+                            if (acceptedValue)
+                                CellGrid[i, j].SetNumber(newNumber);
+                            counter++;
                         }
-
-                        checker = false;
-
+                        acceptedValue = false;
                     }
-
                 }
-                if (contador < 2000)
-                {
+                if (counter < 2000)
                     complete = true;
-
-                }
                 else
-                {
                     Clear();
-                }
-
             }
             AddTetros();
-
         }
 
-
-
-
-
+        /// <summary>
+        /// Checks for an existing number on the corresponding Region, Tetromino, Column and Row of a specific Cell
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <param name="Row"></param>
+        /// <param name="Col"></param>
+        /// <returns></returns>
+        public bool CheckValue(int newValue, int Row, int Col)
+        {
+            bool aptValue = true;
+            SudokuCell Cell = CellGrid[Row, Col];
+            if ((Cell.sRegion != null && Cell.sRegion.CheckNumber(newValue)) || Cell.sTetro.CheckNumber(newValue))
+                aptValue = false;
+            else for (int i = 0; i < Dimension && aptValue; i++)
+            {
+                if (CellGrid[i, Col].GetNumber() == newValue || CellGrid[Row, i].GetNumber() == newValue)
+                        aptValue = false;
+            }
+            return aptValue;
+        }
 
         override public string ToString()
         {
