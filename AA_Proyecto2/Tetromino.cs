@@ -12,7 +12,7 @@ namespace AA_Proyecto2
         private int Result;
         private string Shape;
         private string Direction;
-        private string Mode = "";
+        private string Mode = " ";
         private SudokuCell[] Cells;
         private int Length { get; set; } = 0;
         private readonly Color BackColor;
@@ -49,8 +49,12 @@ namespace AA_Proyecto2
             Result = int.Parse(infoTokens[3]);
 
             string[] coordinates;
-            int cellNum = infoTokens.Length - 4,
+            int cellNum = infoTokens.Length,
                 Row, Column;
+            if (Shape != "D")
+                cellNum -= 4;
+            else
+                cellNum--;
             Cells = new SudokuCell[cellNum];
             for (int i = 0; cellNum + i < infoTokens.Length; i++)
             {
@@ -59,6 +63,7 @@ namespace AA_Proyecto2
                 Column = int.Parse(coordinates[1]);
                 AddCell(Board.GetCellAt(Row, Column));
             }
+            Cells[0].SetResult(Result, Mode);
         }
 
         /// <summary>

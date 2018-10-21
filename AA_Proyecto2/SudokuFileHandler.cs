@@ -11,7 +11,8 @@ namespace AA_Proyecto2
     {
         public static string SaveSudoku(string strSudoku)
         {
-            string fileName = "KillerSudoku_" + DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss") + ".txt",
+            string sudokuSize = strSudoku[0] + "x" + strSudoku[0],
+                   fileName = "KillerSudoku-"+sudokuSize+"_" + DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss") + ".txt",
                    filePath = Path.Combine(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\")), @"saves");
             Console.WriteLine(filePath);
 
@@ -19,56 +20,55 @@ namespace AA_Proyecto2
             return fileName;
         }
 
-        public static Sudoku LoadSudoku()
+        public static Sudoku LoadSudoku(Sudoku OldBoard)
         {
-            Sudoku NewBoard = null;
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            Sudoku NewBoard = OldBoard;
+            OpenFileDialog fileDialog = new OpenFileDialog
             {
-                openFileDialog.InitialDirectory = Path.Combine(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\")), @"saves");
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                string filePath;
-                string[] fileContent;
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                InitialDirectory = Path.Combine(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\")), @"saves"),
+                Filter = "Sudoku Save Files (*.txt)|*.txt"
+            };
+            string[] fileContent;
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                NewBoard = null;
+                fileContent = File.ReadAllLines(fileDialog.FileName);
+                try
                 {
-                    filePath = openFileDialog.FileName;
-                    fileContent = File.ReadAllLines(filePath);
-                    try
+                    int section = 0,
+                        row = 0,
+                        column = 0;
+                    string[] sudokuRow;
+                    foreach (string line in fileContent)
                     {
-                        int section = 0,
-                            row = 0,
-                            column = 0;
-                        string[] sudokuRow;
-                        foreach (string line in fileContent)
+                        if (line == "-") {
+                            section++;
+                            continue;
+                        }
+                        switch (section)
                         {
-                            if (line == "-") {
-                                section++;
-                                continue;
-                            }
-                            switch (section)
-                            {
-                                case (0): //Dimension
-                                    NewBoard = new Sudoku(int.Parse(line));
-                                    break;
-                                case (1): //Sudoku
-                                    sudokuRow = line.Split(',');
-                                    column = 0;
-                                    foreach(string token in sudokuRow)
-                                    {
-                                        NewBoard.SetCellAt(row, column, int.Parse(token));
-                                        column++;
-                                    }
-                                    row++;
-                                    break;
-                                case (2): //Tetrominos
-                                    NewBoard.Tetrominos.Add(new Tetromino(NewBoard, line));
-                                    break;
-                            }
+                            case (0): //Dimension
+                                NewBoard = new Sudoku(int.Parse(line));
+                                break;
+                            case (1): //Sudoku
+                                sudokuRow = line.Split(',');
+                                column = 0;
+                                foreach (string token in sudokuRow)
+                                {
+                                    NewBoard.SetCellAt(row, column, int.Parse(token));
+                                    column++;
+                                }
+                                row++;
+                                break;
+                            case (2): //Tetrominos
+                                NewBoard.Tetrominos.Add(new Tetromino(NewBoard, line));
+                                break;
                         }
                     }
-                    catch (Exception e){
-                        e.ToString();
-                        throw new Exception("El archivo no tiene el formato adecuado.");
-                    }
+                }
+                catch (Exception e) {
+                    e.ToString();
+                    throw new Exception("El archivo no tiene el formato adecuado.");
                 }
             }
             return NewBoard;

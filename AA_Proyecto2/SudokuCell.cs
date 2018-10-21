@@ -36,22 +36,34 @@ namespace AA_Proyecto2
         public void SetNumber(int pNumber)
         {
 			Number = pNumber;
-            Lbl_Number.Invoke((MethodInvoker)(() =>
+            if (Lbl_Number.InvokeRequired)
+                Lbl_Number.Invoke((MethodInvoker)(() =>
+                {
+                    Lbl_Number.Text = Number.ToString();
+                    Lbl_Number.Visible = (Number > 0);
+                }));
+            else
             {
                 Lbl_Number.Text = Number.ToString();
                 Lbl_Number.Visible = (Number > 0);
-            }));
+            }
 		}
 
         public int GetResult() { return Result; }
         public void SetResult(int pResult, string pMode)
         {
             Result = pResult;
-            Lbl_Result.Invoke((MethodInvoker)(() =>
+            if (Lbl_Result.InvokeRequired)
+                Lbl_Result.Invoke((MethodInvoker)(() =>
+                {
+                    Lbl_Result.Text = pMode + Result.ToString();
+                    Lbl_Result.Visible = true;
+                }));
+            else
             {
                 Lbl_Result.Text = pMode + Result.ToString();
                 Lbl_Result.Visible = true;
-            }));
+            }
         }
 
         /// <summary>

@@ -11,10 +11,14 @@ namespace AA_Proyecto2
 {
     public partial class Sudoku : Panel
     {
-        private const int CellSize = 35;
+        private const int CellSize = 40;
         private const int Spacer = 5;
 
-        private int Dimension;
+        //For UI threads
+        public static bool stopGenerator = false;
+        public static bool stopSolver = false;
+
+        public int Dimension;
         private SudokuCell[,] CellGrid;
         public SudokuRegion[] Regions;
         public List<Tetromino> Tetrominos;
@@ -454,6 +458,7 @@ namespace AA_Proyecto2
             }
             Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
+
         /// <summary>
         /// Adds a new SudokuCell control to the Sudoku Layout in its corresponding position
         /// </summary>
@@ -478,9 +483,9 @@ namespace AA_Proyecto2
         {
             Tetromino newTetro;
             Random r = new Random();
-            for (int Row = 0; Row < Dimension; Row++)
+            for (int Row = 0; Row < Dimension && !stopGenerator; Row++)
             {
-                for (int Col = 0; Col < Dimension; Col++)
+                for (int Col = 0; Col < Dimension && !stopGenerator; Col++)
                 {
                     if (CellGrid[Row, Col].sTetro == null)
                     {
@@ -493,53 +498,153 @@ namespace AA_Proyecto2
         }
 
         /// <summary>
-        /// Checks for an existing number on the corresponding row
+        /// Generates a random Killer Sudoku Board
         /// </summary>
-        /// <param name="Row"></param>
-        /// <param name="Number"></param>
         /// <returns></returns>
-        public bool CheckRow(int Row, int Number)
+        public void Generate()
         {
-            bool result = false;
-            SudokuCell Cell;
-            for (int Column = 0; Column < Dimension; Column++)
+            bool acceptedValue = false;
+            Random randNumGen = new Random();
+            int newNumber;
+            const int lastCellOffset = 2;
+            List<int>[] numberListArray = new List<int>[Dimension*Dimension];
+            SudokuCell cell;
+            for (int i = 0; i < Dimension && !stopGenerator; i++)
             {
-                Cell = CellGrid[Row, Column];
-                if (Cell.GetNumber() == Number)
+                for (int j = 0; j < Dimension && !stopGenerator; j++)
                 {
-                    result = true;
-                    break;
+                    //numberListArray[i + j] = numberListArray[i + j];
+                    cell = CellGrid[i, j];
+                    if (cell.GetNumber() == 0)
+                        numberListArray[i + j] = GenerateNumberList();
+                    else
+                        numberListArray[i + j].Remove(cell.GetNumber());
+
+                    while (!acceptedValue && numberListArray[i + j].Count > 0)
+                    {
+                        System.Threading.Thread.Sleep(50);
+                        newNumber = numberListArray[i + j][randNumGen.Next(numberListArray[i + j].Count)];
+                        acceptedValue = CheckValue(newNumber, i, j);
+                        cell.SetNumber(newNumber);
+                        if (!acceptedValue)
+                            numberListArray[i + j].Remove(newNumber);
+                    }
+                    acceptedValue = false;
+                    if (numberListArray[i + j].Count == 0)
+                    {
+                        cell.SetNumber(0);
+                        j -= lastCellOffset;
+                        if (j < -1) {
+                            i -= 1;
+                            j = Dimension - lastCellOffset;
+                            continue;
+                        }
+                    }
+                    //System.Threading.Thread.Sleep(50);
+
                 }
             }
-            return result;
+            if (!stopGenerator)
+                AddTetros();
         }
 
         /// <summary>
-        /// Checks for an existing number on the corresponding column
+        /// Generates a List of numbers based on the dimension of the Sudoku
         /// </summary>
-        /// <param name="Column"></param>
-        /// <param name="Number"></param>
         /// <returns></returns>
-        public bool CheckColumn(int Column, int Number)
+        private List<int> GenerateNumberList()
         {
-            bool result = false;
-            SudokuCell Cell;
-            for (int Row = 0; Row < Dimension; Row++)
+            List<int> newNumList = null;
+            switch(Dimension)
             {
-                Cell = CellGrid[Row, Column];
-                if (Cell.GetNumber() == Number)
-                {
-                    result = true;
+                case (5):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5 };
                     break;
-                }
+
+                case (6):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6};
+                    break;
+
+                case (7):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7};
+                    break;
+
+                case (8):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8 };
+                    break;
+
+                case (9):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                    break;
+
+                case (10):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+                    break;
+
+                case (11):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+                    break;
+
+                case (12):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+                    break;
+
+                case (13):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+                    break;
+
+                case (14):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+                    break;
+
+                case (15):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+                    break;
+
+                case (16):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+                    break;
+
+                case (17):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+                    break;
+
+                case (18):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+                    break;
+
+                case (19):
+                    newNumList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+                    break;
             }
-            return result;
+            return newNumList;
+        }
+
+        /// <summary>
+        /// Checks for an existing number on the corresponding Region, Tetromino, Column and Row of a specific Cell
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <param name="Row"></param>
+        /// <param name="Col"></param>
+        /// <returns></returns>
+        public bool CheckValue(int newValue, int Row, int Col)
+        {
+            bool aptValue = true;
+            SudokuCell Cell = CellGrid[Row, Col];
+            if ((Cell.sRegion != null && Cell.sRegion.CheckNumber(newValue)) || (Cell.sTetro != null && Cell.sTetro.CheckNumber(newValue)))
+                aptValue = false;
+            else for (int i = 0; i < Dimension && aptValue; i++)
+                {
+                    if (CellGrid[i, Col].GetNumber() == newValue || CellGrid[Row, i].GetNumber() == newValue)
+                        aptValue = false;
+                }
+            return aptValue;
         }
 
         override public string ToString()
         {
             string strOut = Dimension.ToString() + "\n-\n";
-
+            
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = 0; j < Dimension; j++)
@@ -551,6 +656,7 @@ namespace AA_Proyecto2
                 strOut += "\n";
             }
             strOut += "-\n";
+            
             foreach (Tetromino t in Tetrominos)
                 strOut += t.ToString() + "\n";
             strOut = strOut.TrimEnd('\n');
@@ -562,7 +668,7 @@ namespace AA_Proyecto2
         /// </summary>
         public void Clear()
         {
-            for  (int row = 0; row < Dimension; row++)
+            for (int row = 0; row < Dimension; row++)
             {
                 for (int col = 0; col < Dimension; col++)
                 {

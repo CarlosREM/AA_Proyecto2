@@ -34,7 +34,7 @@
             // 
             this.BackColor = System.Drawing.SystemColors.Info;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Size = new System.Drawing.Size(35, 35);
+            this.Size = new System.Drawing.Size(40, 40);
             this.ResumeLayout(false);
 
         }
