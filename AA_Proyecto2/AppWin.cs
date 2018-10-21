@@ -26,7 +26,7 @@ namespace AA_Proyecto2
         {
             InitializeComponent();
 
-            TimerThread = new BackgroundWorker { WorkerReportsProgress = true };
+            TimerThread = new BackgroundWorker();
             TimerThread.DoWork += Start_Watch;
             TimerThread.ProgressChanged += UpdateWatchLabel;
             
@@ -262,10 +262,13 @@ namespace AA_Proyecto2
                 oldms = 0;
             while (Watch.IsRunning)
             {
-                ms = (int)Watch.ElapsedMilliseconds;
+                ms = (int) Watch.ElapsedMilliseconds;
                 if (ms > oldms)
                 {
-                    bw.ReportProgress(ms);
+                    lbl_timer.Invoke((MethodInvoker)(() =>
+                    {
+                        lbl_timer.Text = "Timer - " + Watch.Elapsed.ToString("hh':'mm':'ss'.'ff");
+                    }));
                     oldms = ms;
                 }
             }

@@ -7,54 +7,15 @@ namespace AA_Proyecto2
 {
     public class Tetromino
     {
-        public enum Orientation {Left, Up, Right, Down};
+        public static List<Color> UsedColors;
 
         private int Result;
         private string Shape;
-        private Orientation Direction;
+        private string Direction;
         private string Mode = "";
         private SudokuCell[] Cells;
         private int Length { get; set; } = 0;
         private readonly Color BackColor;
-
-        public string GetDirection()
-        {
-            string strOut = "";
-            switch(Direction)
-            {
-                case (Orientation.Left):
-                    strOut = "L";
-                    break;
-                case (Orientation.Up):
-                    strOut = "U";
-                    break;
-                case (Orientation.Right):
-                    strOut = "R";
-                    break;
-                case (Orientation.Down):
-                    strOut = "D";
-                    break;
-            }
-            return strOut;
-        }
-        public void SetDirection(string strDirection)
-        {
-            switch(strDirection)
-            {
-                case ("L"):
-                    Direction = Orientation.Left;
-                    break;
-                case ("U"):
-                    Direction = Orientation.Up;
-                    break;
-                case ("R"):
-                    Direction = Orientation.Right;
-                    break;
-                case ("D"):
-                    Direction = Orientation.Down;
-                    break;
-            }
-        }
 
         /// <summary>
         /// Default Constructor
@@ -83,7 +44,7 @@ namespace AA_Proyecto2
             BackColor = PickColor();
             string[] infoTokens = strInfo.Split('-');
             Shape = infoTokens[0];
-            SetDirection(infoTokens[1]);
+            Direction = infoTokens[1];
             Mode = infoTokens[2];
             Result = int.Parse(infoTokens[3]);
 
@@ -110,264 +71,312 @@ namespace AA_Proyecto2
         {
             List<string> Shapes = new List<string> { "O", "I", "J", "L", "S", "T", "Z" };
             int shapeIndex;
-            bool CellTetroVerify = false;
-            Random r = new Random();
-            while (Length < 4)
+            while (Length < 1)
             {
                 if (Shapes.Count > 0)
                 {
-                    shapeIndex = r.Next(2);//Shapes.Count);
+                    shapeIndex = new Random().Next(Shapes.Count);
                     Shape = Shapes[shapeIndex];
-                    Direction = (Orientation) r.Next(4);
                     switch (Shape)
                     {
-                        case ("O"):
-                            CellTetroVerify = Arrange_O(Board, Row, Column);
+                        case ("O"): //0
+                            Arrange_O(Board, Row, Column);
                             break;
 
-                        case ("I"):
-                            CellTetroVerify = Arrange_I(Board, Row, Column);
+                        case ("I"): //1
+                            Arrange_I(Board, Row, Column);
                             break;
 
-                        case ("J"):
-                            CellTetroVerify = Arrange_J(Board, Row, Column); //WIP
+                        case ("J"): //2
+                            Arrange_J(Board, Row, Column);
                             break;
 
-                        case ("L"):
-                            CellTetroVerify = Arrange_L(Board, Row, Column); //WIP
+                        case ("L"): //3
+                            Arrange_L(Board, Row, Column); 
                             break;
 
-                        case ("S"):
-                            CellTetroVerify = Arrange_S(Board, Row, Column); //WIP
+                        case ("S"): //4
+                            Arrange_S(Board, Row, Column);
                             break;
 
-                        case ("T"):
-                            CellTetroVerify = Arrange_T(Board, Row, Column); //WIP
+                        case ("T"): //5
+                            Arrange_T(Board, Row, Column);
                             break;
 
-                        case ("Z"):
-                            CellTetroVerify = Arrange_Z(Board, Row, Column); //WIP
+                        case ("Z"): //6
+                            Arrange_Z(Board, Row, Column);
                             break;
                     }
-                    if (CellTetroVerify)
-                        Shapes.RemoveAt(shapeIndex);
+                    Shapes.RemoveAt(shapeIndex);
                 }
                 else
                 {
-                    Shape = "D";
                     Cells = new SudokuCell[1];
-                    Length = 1;
+                    Shape = "D";
+                    Direction = "Dot";
                     AddCell(Board.GetCellAt(Row, Column));
-                    break;
                 }
             }
         }
 
-        private bool Arrange_O(Sudoku Board, int Row, int Column)
+        private void Arrange_O(Sudoku Board, int Row, int Column)
         {
-            bool CellWithTetro = false;
             try
             {
                 AddCell(Board.GetCellAt(Row, Column));
                 AddCell(Board.GetCellAt(Row, Column+1));
                 AddCell(Board.GetCellAt(Row+1, Column));
                 AddCell(Board.GetCellAt(Row+1, Column+1));
+                Direction = "Square";
             }
             catch (Exception e)
             {
-                if (e.Message == "Celda ya tiene Tetro")
-                {
-                    ResetCells();
-                    CellWithTetro = true;
-                }
+                e.ToString();
+                ResetCells();
             }
-            return CellWithTetro;
         }
 
-        private bool Arrange_I(Sudoku Board, int Row, int Column)
+        private void Arrange_I(Sudoku Board, int Row, int Column)
         {
-            bool CellWithTetro = false;
-            try
+            int directionIndex = 0;
+            List<string> Directions = new List<string> {"Up", "Left"};
+            while (Directions.Count > 0 && Length < 4)
             {
-                if (Direction == Orientation.Left || Direction == Orientation.Right)
+                directionIndex = new Random().Next(Directions.Count);
+                Direction = Directions[directionIndex];
+                try
                 {
-                    AddCell(Board.GetCellAt(Row, Column));
-                    AddCell(Board.GetCellAt(Row, Column + 1));
-                    AddCell(Board.GetCellAt(Row, Column + 2));
-                    AddCell(Board.GetCellAt(Row, Column + 3));
+                    if (Direction == "Up")
+                    {
+                        AddCell(Board.GetCellAt(Row, Column));
+                        AddCell(Board.GetCellAt(Row + 1, Column));
+                        AddCell(Board.GetCellAt(Row + 2, Column));
+                        AddCell(Board.GetCellAt(Row + 3, Column));
+                    }
+                    else
+                    {
+                        AddCell(Board.GetCellAt(Row, Column));
+                        AddCell(Board.GetCellAt(Row, Column + 1));
+                        AddCell(Board.GetCellAt(Row, Column + 2));
+                        AddCell(Board.GetCellAt(Row, Column + 3));
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    AddCell(Board.GetCellAt(Row, Column));
-                    AddCell(Board.GetCellAt(Row + 1, Column));
-                    AddCell(Board.GetCellAt(Row + 2, Column));
-                    AddCell(Board.GetCellAt(Row + 3, Column));
-                }
-            }
-            catch (Exception e)
-            {
-                if (e.Message == "Celda ya tiene Tetro")
-                {
+                    e.ToString();
                     ResetCells();
-                    CellWithTetro = true;
                 }
+                Directions.RemoveAt(directionIndex);
             }
-            return CellWithTetro;
         }
 
-        private bool Arrange_J(Sudoku Board, int Row, int Column) //WIP
+        private void Arrange_J(Sudoku Board, int Row, int Column)
         {
-            bool CellWithTetro = false;
-            try
+            int directionIndex = 0;
+            List<string> Directions = new List<string> { "Up", "Left", "Down", "Right" };
+            while (Directions.Count > 0 && Length < 4)
             {
-                switch(Direction)
+                directionIndex = new Random().Next(Directions.Count);
+                Direction = Directions[directionIndex];
+                try
                 {
-                    case (Orientation.Left):
-                        break;
-
-                    case (Orientation.Up):
-                        break;
-
-                    case (Orientation.Right):
-                        break;
-
-                    case (Orientation.Down):
-                        break;
+                    switch (Direction)
+                    {
+                        case ("Up"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            AddCell(Board.GetCellAt(Row + 2, Column));
+                            AddCell(Board.GetCellAt(Row + 2, Column - 1));
+                            break;
+                        case ("Left"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row, Column + 1));
+                            AddCell(Board.GetCellAt(Row, Column + 2));
+                            AddCell(Board.GetCellAt(Row + 1, Column + 2));
+                            break;
+                        case ("Down"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row, Column + 1));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            AddCell(Board.GetCellAt(Row + 2, Column));
+                            break;
+                        case ("Right"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column + 1));
+                            AddCell(Board.GetCellAt(Row + 1, Column + 1));
+                            break;
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                if (e.Message == "Celda ya tiene Tetro")
+                catch (Exception e)
                 {
+                    e.ToString();
                     ResetCells();
-                    CellWithTetro = true;
                 }
+                Directions.RemoveAt(directionIndex);
             }
-            return CellWithTetro;
         }
 
-        private bool Arrange_L(Sudoku Board, int Row, int Column) //WIP
+        private void Arrange_L(Sudoku Board, int Row, int Column)
         {
-            bool CellWithTetro = false;
-            try
+            int directionIndex = 0;
+            List<string> Directions = new List<string> { "Up", "Left", "Down", "Right" };
+            while (Directions.Count > 0 && Length < 4)
             {
-                switch (Direction)
+                directionIndex = new Random().Next(Directions.Count);
+                Direction = Directions[directionIndex];
+                try
                 {
-                    case (Orientation.Left):
-                        break;
-
-                    case (Orientation.Up):
-                        break;
-
-                    case (Orientation.Right):
-                        break;
-
-                    case (Orientation.Down):
-                        break;
+                    switch (Direction)
+                    {
+                        case ("Up"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            AddCell(Board.GetCellAt(Row + 2, Column));
+                            AddCell(Board.GetCellAt(Row + 2, Column + 1));
+                            break;
+                        case ("Left"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column - 1));
+                            AddCell(Board.GetCellAt(Row + 1, Column - 2));
+                            break;
+                        case ("Down"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row, Column + 1));
+                            AddCell(Board.GetCellAt(Row + 1, Column + 1));
+                            AddCell(Board.GetCellAt(Row + 2, Column + 1));
+                            break;
+                        case ("Right"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row, Column + 1));
+                            AddCell(Board.GetCellAt(Row, Column + 2));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            break;
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                if (e.Message == "Celda ya tiene Tetro")
+                catch (Exception e)
                 {
+                    e.ToString();
                     ResetCells();
-                    CellWithTetro = true;
                 }
+                Directions.RemoveAt(directionIndex);
             }
-            return CellWithTetro;
         }
 
-        private bool Arrange_S(Sudoku Board, int Row, int Column) //WIP
+        private void Arrange_S(Sudoku Board, int Row, int Column)
         {
-            bool CellWithTetro = false;
-            try
+            int directionIndex = 0;
+            List<string> Directions = new List<string> { "Up", "Right"};
+            while (Directions.Count > 0 && Length < 4)
             {
-                switch (Direction)
+                directionIndex = new Random().Next(Directions.Count);
+                Direction = Directions[directionIndex];
+                try
                 {
-                    case (Orientation.Left):
-                        break;
-
-                    case (Orientation.Up):
-                        break;
-
-                    case (Orientation.Right):
-                        break;
-
-                    case (Orientation.Down):
-                        break;
+                    if (Direction == "Up")
+                    {
+                        AddCell(Board.GetCellAt(Row, Column));
+                        AddCell(Board.GetCellAt(Row + 1, Column));
+                        AddCell(Board.GetCellAt(Row + 1, Column + 1));
+                        AddCell(Board.GetCellAt(Row + 2, Column + 1));
+                    }
+                    else
+                    {
+                        AddCell(Board.GetCellAt(Row, Column));
+                        AddCell(Board.GetCellAt(Row, Column + 1));
+                        AddCell(Board.GetCellAt(Row + 1, Column - 1));
+                        AddCell(Board.GetCellAt(Row + 1, Column));
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                if (e.Message == "Celda ya tiene Tetro")
+                catch (Exception e)
                 {
+                    e.ToString();
                     ResetCells();
-                    CellWithTetro = true;
                 }
+                Directions.RemoveAt(directionIndex);
             }
-            return CellWithTetro;
         }
 
-        private bool Arrange_T(Sudoku Board, int Row, int Column) //WIP
+        private void Arrange_T(Sudoku Board, int Row, int Column)
         {
-            bool CellWithTetro = false;
-            try
+            int directionIndex = 0;
+            List<string> Directions = new List<string> { "Up", "Left", "Down", "Right" };
+            while (Directions.Count > 0 && Length < 4)
             {
-                switch (Direction)
+                directionIndex = new Random().Next(Directions.Count);
+                Direction = Directions[directionIndex];
+                try
                 {
-                    case (Orientation.Left):
-                        break;
-
-                    case (Orientation.Up):
-                        break;
-
-                    case (Orientation.Right):
-                        break;
-
-                    case (Orientation.Down):
-                        break;
+                    switch (Direction)
+                    {
+                        case ("Up"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row, Column + 1));
+                            AddCell(Board.GetCellAt(Row, Column + 2));
+                            AddCell(Board.GetCellAt(Row + 1, Column + 1));
+                            break;
+                        case ("Left"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column + 1));
+                            AddCell(Board.GetCellAt(Row + 2, Column));
+                            break;
+                        case ("Down"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column - 1));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column + 1));
+                            break;
+                        case ("Right"):
+                            AddCell(Board.GetCellAt(Row, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            AddCell(Board.GetCellAt(Row + 1, Column - 1));
+                            AddCell(Board.GetCellAt(Row + 1, Column));
+                            break;
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                if (e.Message == "Celda ya tiene Tetro")
+                catch (Exception e)
                 {
+                    e.ToString();
                     ResetCells();
-                    CellWithTetro = true;
                 }
+                Directions.RemoveAt(directionIndex);
             }
-            return CellWithTetro;
         }
 
-        private bool Arrange_Z(Sudoku Board, int Row, int Column) //WIP
+        private void Arrange_Z(Sudoku Board, int Row, int Column)
         {
-            bool CellWithTetro = false;
-            try
+            int directionIndex = 0;
+            List<string> Directions = new List<string> { "Up", "Left" };
+            while (Directions.Count > 0 && Length < 4)
             {
-                switch (Direction)
+                directionIndex = new Random().Next(Directions.Count);
+                Direction = Directions[directionIndex];
+                try
                 {
-                    case (Orientation.Left):
-                        break;
-
-                    case (Orientation.Up):
-                        break;
-
-                    case (Orientation.Right):
-                        break;
-
-                    case (Orientation.Down):
-                        break;
+                    if (Direction == "Up")
+                    {
+                        AddCell(Board.GetCellAt(Row, Column));
+                        AddCell(Board.GetCellAt(Row + 1, Column));
+                        AddCell(Board.GetCellAt(Row + 1, Column - 1));
+                        AddCell(Board.GetCellAt(Row + 2, Column - 1));
+                    }
+                    else
+                    {
+                        AddCell(Board.GetCellAt(Row, Column));
+                        AddCell(Board.GetCellAt(Row, Column + 1));
+                        AddCell(Board.GetCellAt(Row + 1, Column + 1));
+                        AddCell(Board.GetCellAt(Row + 1, Column + 2));
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                if (e.Message == "Celda ya tiene Tetro")
+                catch (Exception e)
                 {
+                    e.ToString();
                     ResetCells();
-                    CellWithTetro = true;
                 }
+                Directions.RemoveAt(directionIndex);
             }
-            return CellWithTetro;
         }
 
         /// <summary>
@@ -448,19 +457,27 @@ namespace AA_Proyecto2
 
         public static Color PickColor()
         {
-            System.Threading.Thread.Sleep(50);
+            bool uniqueColor = false;
+            Color newColor = new Color();
             Random rand = new Random();
-            int max = byte.MaxValue + 1,
-                min = max / 2;
-            int r = rand.Next(min, max);
-            int g = rand.Next(min, max);
-            int b = rand.Next(min, max);
-            return Color.FromArgb(r, g, b);
+            while (!uniqueColor)
+            {
+                System.Threading.Thread.Sleep(50);
+                int max = (byte.MaxValue + 1),
+                    min = max / 3;
+                int r = rand.Next(min, max);
+                int g = rand.Next(min, max);
+                int b = rand.Next(min, max);
+                newColor = Color.FromArgb(r, g, b);
+                if (!UsedColors.Contains(newColor))
+                    uniqueColor = true;
+            }
+            return newColor;
         }
 
         public override string ToString()
         {
-            string strOut = Shape + "-" + GetDirection() + "-" + Mode + "-" + Result.ToString() + "-";
+            string strOut = Shape + "-" + Direction + "-" + Mode + "-" + Result.ToString() + "-";
             SudokuCell cell;
             for (int i = 0; i < Length; i++)
             {

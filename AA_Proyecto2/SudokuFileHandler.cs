@@ -66,6 +66,7 @@ namespace AA_Proyecto2
                         }
                     }
                     catch (Exception e){
+                        e.ToString();
                         throw new Exception("El archivo no tiene el formato adecuado.");
                     }
                 }

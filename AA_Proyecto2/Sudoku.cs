@@ -32,9 +32,10 @@ namespace AA_Proyecto2
             Dimension = pDimension;
             CellGrid = new SudokuCell[Dimension, Dimension];
             Regions = new SudokuRegion[Dimension];
-            Tetrominos = new List<Tetromino>();
             for (int i = 0; i < Dimension; i++)
                 Regions[i] = new SudokuRegion(Dimension);
+            Tetrominos = new List<Tetromino>();
+            Tetromino.UsedColors = new List<Color>();
             SuspendLayout();
             ArrangeSetup();
             ResumeLayout();
@@ -60,7 +61,7 @@ namespace AA_Proyecto2
                     Arrange_6x6();
                     break;
                 case (7):
-                    Arrange_7x7(); //WIP
+                    Arrange_default();//7x7(); //WIP
                     break;
                 case (8):
                     Arrange_8x8();
@@ -72,13 +73,13 @@ namespace AA_Proyecto2
                     Arrange_10x10();
                     break;
                 case (11):
-                    Arrange_11x11(); //WIP
+                    Arrange_default();//11x11(); //WIP
                     break;
                 case (12):
                     Arrange_12x12();
                     break;
                 case (13):
-                    Arrange_13x13(); //WIP
+                    Arrange_default();//13x13(); //WIP
                     break;
                 case (14):
                     Arrange_14x14();
@@ -90,13 +91,13 @@ namespace AA_Proyecto2
                     Arrange_16x16();
                     break;
                 case (17):
-                    Arrange_17x17(); //WIP
+                    Arrange_default();//17x17(); //WIP
                     break;
                 case (18):
                     Arrange_18x18();
                     break;
                 case (19):
-                    Arrange_19x19(); //WIP
+                    Arrange_default();//19x19(); //WIP
                     break;
             }
             //RegionTest();
@@ -223,12 +224,7 @@ namespace AA_Proyecto2
 
         private void Arrange_7x7() //WIP
         {
-            for (int i = 0; i < Dimension; i++)
-            {
-                for (int j = 0; j < Dimension; j++)
-                    AddCell(i, j, Spacer, Spacer);
-            }
-            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
+
         }
 
         private void Arrange_8x8()
@@ -308,12 +304,6 @@ namespace AA_Proyecto2
 
         private void Arrange_11x11() //WIP
         {
-            for (int i = 0; i < Dimension; i++)
-            {
-                for (int j = 0; j < Dimension; j++)
-                    AddCell(i, j, Spacer, Spacer);
-            }
-            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
 
         private void Arrange_12x12()
@@ -343,12 +333,6 @@ namespace AA_Proyecto2
 
         private void Arrange_13x13() //WIP
         {
-            for (int i = 0; i < Dimension; i++)
-            {
-                for (int j = 0; j < Dimension; j++)
-                    AddCell(i, j, Spacer, Spacer);
-            }
-            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
 
         private void Arrange_14x14()
@@ -428,12 +412,7 @@ namespace AA_Proyecto2
 
         private void Arrange_17x17() //WIP
         {
-            for (int i = 0; i < Dimension; i++)
-            {
-                for (int j = 0; j < Dimension; j++)
-                    AddCell(i, j, Spacer, Spacer);
-            }
-            Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
+
         }
 
         private void Arrange_18x18()
@@ -463,6 +442,11 @@ namespace AA_Proyecto2
 
         private void Arrange_19x19() //WIP
         {
+
+        }
+
+        private void Arrange_default()
+        {
             for (int i = 0; i < Dimension; i++)
             {
                 for (int j = 0; j < Dimension; j++)
@@ -470,7 +454,6 @@ namespace AA_Proyecto2
             }
             Size = new Size(CellSize * Dimension + Spacer * 2, CellSize * Dimension + Spacer * 2);
         }
-
         /// <summary>
         /// Adds a new SudokuCell control to the Sudoku Layout in its corresponding position
         /// </summary>
@@ -488,14 +471,23 @@ namespace AA_Proyecto2
             Controls.Add(CellGrid[Row, Column]);
         }
 
+        /// <summary>
+        /// Adds a tetromino to the Sudoku layout, both logically and visually
+        /// </summary>
         public void AddTetros()
         {
+            Tetromino newTetro;
+            Random r = new Random();
             for (int Row = 0; Row < Dimension; Row++)
             {
                 for (int Col = 0; Col < Dimension; Col++)
                 {
                     if (CellGrid[Row, Col].sTetro == null)
-                        Tetrominos.Add(new Tetromino(this, Row, Col));
+                    {
+                        newTetro = new Tetromino(this, Row, Col);
+                        Tetrominos.Add(newTetro);
+                        System.Threading.Thread.Sleep(100);
+                    }
                 }
             }
         }
