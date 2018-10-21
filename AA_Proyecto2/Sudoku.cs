@@ -31,6 +31,15 @@ namespace AA_Proyecto2
             InitializeComponent();
             Dimension = pDimension;
             CellGrid = new SudokuCell[Dimension, Dimension];
+            CellGrid = new SudokuCell[Dimension, Dimension];
+            for (int x = 0; x < Dimension; x++)
+            {
+                for (int y = 0; y < Dimension; y++)
+                {
+                    SudokuCell cell = new SudokuCell(x, y);
+                    CellGrid[x, y] = cell;
+                }
+            }
             Regions = new SudokuRegion[Dimension];
             Tetrominos = new List<Tetromino>();
             for (int i = 0; i < Dimension; i++)
@@ -543,6 +552,82 @@ namespace AA_Proyecto2
             }
             return result;
         }
+
+        /// <summary>
+        /// Checks for an existing number on the corresponding column and row looking for repeats, if none found, inserts v in that possition
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public bool checkValue(int v, int x, int y)
+        {
+            for (int i = 0; i < Dimension; i++)
+            {
+                if (CellGrid[i, y].GetNumber() == v || CellGrid[x, i].GetNumber() == v)
+                    return false;
+            }
+            CellGrid[x, y].SetNumber(v);
+            return true;
+        }
+
+        /// <summary>
+        /// generates a random killer sudoku board
+        /// </summary>
+        /// <returns></returns>
+
+        public void generateBoard()
+        {
+            double size = (double)Dimension;
+            //ArrayList<Section> parts = new ArrayList<>();
+            int[,] template = new int[Dimension, Dimension];
+            bool checker = false;
+            bool complete = false;
+            Random generate = new Random();
+
+
+            while (!complete)
+            {
+                int contador = 0;
+
+                for (int i = 0; i < Dimension; i++)
+                {
+                    for (int j = 0; j < Dimension; j++)
+                    {
+                        while (!checker && contador < 2 * Math.Pow(10, size))
+                        {
+                            int generado = generate.Next(Dimension + 1);
+
+                            checker = checkValue(generado, i, j);
+
+
+                            contador++;
+                        }
+
+                        checker = false;
+
+                    }
+
+                }
+                if (contador < 2000)
+                {
+                    complete = true;
+
+                }
+                else
+                {
+                    Clear();
+                }
+
+            }
+            AddTetros();
+
+        }
+
+
+
+
+
 
         override public string ToString()
         {
