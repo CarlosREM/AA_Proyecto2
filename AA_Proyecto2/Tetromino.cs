@@ -7,79 +7,15 @@ namespace AA_Proyecto2
 {
     public class Tetromino
     {
-        public enum TetroShape {O, I, J, L, S, T, Z, Dot};
         public enum Orientation {Left, Up, Right, Down};
 
         private int Result;
-        private TetroShape Shape;
+        private string Shape;
         private Orientation Direction;
         private string Mode = "";
         private SudokuCell[] Cells;
         private int Length { get; set; } = 0;
-        private readonly Color color;
-        
-        public string GetShape()
-        {
-            string strOut =  "";
-            switch(Shape)
-            {
-                case (TetroShape.O):
-                    strOut = "O";
-                    break;
-                case (TetroShape.I):
-                    strOut = "I";
-                    break;
-                case (TetroShape.J):
-                    strOut = "J";
-                    break;
-                case (TetroShape.L):
-                    strOut = "L";
-                    break;
-                case (TetroShape.S):
-                    strOut = "S";
-                    break;
-                case (TetroShape.T):
-                    strOut = "T";
-                    break;
-                case (TetroShape.Z):
-                    strOut = "Z";
-                    break;
-                case (TetroShape.Dot):
-                    strOut = "D";
-                    break;
-            }
-            return strOut;
-        }
-        public void SetShape(string strShape)
-        {
-            switch(strShape)
-            {
-                case ("O"):
-                    Shape = TetroShape.O;
-                    break;
-                case ("I"):
-                    Shape = TetroShape.I;
-                    break;
-                case ("J"):
-                    Shape = TetroShape.J;
-                    break;
-                case ("L"):
-                    Shape = TetroShape.L;
-                    break;
-                case ("S"):
-                    Shape = TetroShape.S;
-                    break;
-                case ("T"):
-                    Shape = TetroShape.T;
-                    break;
-                case ("Z"):
-                    Shape = TetroShape.Z;
-                    break;
-                case ("D"):
-                    Shape = TetroShape.Dot;
-                    break;
-            }
-        }
+        private readonly Color BackColor;
 
         public string GetDirection()
         {
@@ -129,55 +65,9 @@ namespace AA_Proyecto2
         public Tetromino(Sudoku Board, int Row, int Column)
         {
             Cells = new SudokuCell[4];
-            color = PickColor();
-            Random r = new Random();
-            Result = r.Next(2);
-            List<TetroShape> ShapeTries = new List<TetroShape>(); 
-            while (Length < 4)
-            {
-                if (ShapeTries.Count < 7)
-                {
-                    Shape = (TetroShape)r.Next(2);//(7);
-                    switch (Shape)
-                    {
-                        case (TetroShape.O):
-                            Arrange_O(Board, Row, Column);
-                            break;
-
-                        case (TetroShape.I):
-                            Arrange_I(Board, Row, Column);
-                            break;
-
-                        case (TetroShape.J):
-                            Arrange_J(Board, Row, Column); //WIP
-                            break;
-
-                        case (TetroShape.L):
-                            Arrange_L(Board, Row, Column); //WIP
-                            break;
-
-                        case (TetroShape.S):
-                            Arrange_S(Board, Row, Column); //WIP
-                            break;
-
-                        case (TetroShape.T):
-                            Arrange_T(Board, Row, Column); //WIP
-                            break;
-
-                        case (TetroShape.Z):
-                            Arrange_Z(Board, Row, Column); //WIP
-                            break;
-                    }
-                    ShapeTries.Add(Shape);
-                }
-                else {
-                    Shape = TetroShape.Dot;
-                    Cells = new SudokuCell[1];
-                    Length = 1;
-                    AddCell(Board.GetCellAt(Row, Column));
-                    break;
-                }
-            }
+            BackColor = PickColor();
+            Result = new Random().Next(2);
+            ArrangeTetro(Board, Row, Column);
             AssignResult();
         }
 
@@ -190,9 +80,9 @@ namespace AA_Proyecto2
         public Tetromino(Sudoku Board, string strInfo)
         {
             //strInfo = 0[Shape] - 1[Direction] - 2[Mode] - 3[Result] - +4[Cells...] 5 6 7
-            color = PickColor();
+            BackColor = PickColor();
             string[] infoTokens = strInfo.Split('-');
-            SetShape(infoTokens[0]);
+            Shape = infoTokens[0];
             SetDirection(infoTokens[1]);
             Mode = infoTokens[2];
             Result = int.Parse(infoTokens[3]);
@@ -210,8 +100,72 @@ namespace AA_Proyecto2
             }
         }
 
-        private void Arrange_O(Sudoku Board, int Row, int Column)
+        /// <summary>
+        /// Arranges the Shape of the Tetromino based on the SudokuCell location
+        /// </summary>
+        /// <param name="Board"></param>
+        /// <param name="Row"></param>
+        /// <param name="Column"></param>
+        private void ArrangeTetro(Sudoku Board, int Row, int Column)
         {
+            List<string> Shapes = new List<string> { "O", "I", "J", "L", "S", "T", "Z" };
+            int shapeIndex;
+            bool CellTetroVerify = false;
+            Random r = new Random();
+            while (Length < 4)
+            {
+                if (Shapes.Count > 0)
+                {
+                    shapeIndex = r.Next(2);//Shapes.Count);
+                    Shape = Shapes[shapeIndex];
+                    Direction = (Orientation) r.Next(4);
+                    switch (Shape)
+                    {
+                        case ("O"):
+                            CellTetroVerify = Arrange_O(Board, Row, Column);
+                            break;
+
+                        case ("I"):
+                            CellTetroVerify = Arrange_I(Board, Row, Column);
+                            break;
+
+                        case ("J"):
+                            CellTetroVerify = Arrange_J(Board, Row, Column); //WIP
+                            break;
+
+                        case ("L"):
+                            CellTetroVerify = Arrange_L(Board, Row, Column); //WIP
+                            break;
+
+                        case ("S"):
+                            CellTetroVerify = Arrange_S(Board, Row, Column); //WIP
+                            break;
+
+                        case ("T"):
+                            CellTetroVerify = Arrange_T(Board, Row, Column); //WIP
+                            break;
+
+                        case ("Z"):
+                            CellTetroVerify = Arrange_Z(Board, Row, Column); //WIP
+                            break;
+                    }
+                    if (CellTetroVerify)
+                        Shapes.RemoveAt(shapeIndex);
+                }
+                else
+                {
+                    Shape = "D";
+                    Cells = new SudokuCell[1];
+                    Length = 1;
+                    AddCell(Board.GetCellAt(Row, Column));
+                    break;
+                }
+            }
+        }
+
+        private bool Arrange_O(Sudoku Board, int Row, int Column)
+        {
+            bool CellWithTetro = false;
             try
             {
                 AddCell(Board.GetCellAt(Row, Column));
@@ -221,17 +175,21 @@ namespace AA_Proyecto2
             }
             catch (Exception e)
             {
-                Cells = new SudokuCell[4];
-                Length = 0;
+                if (e.Message == "Celda ya tiene Tetro")
+                {
+                    ResetCells();
+                    CellWithTetro = true;
+                }
             }
+            return CellWithTetro;
         }
 
-        private void Arrange_I(Sudoku Board, int Row, int Column)
+        private bool Arrange_I(Sudoku Board, int Row, int Column)
         {
-            Direction = (Orientation) new Random().Next(2);
+            bool CellWithTetro = false;
             try
             {
-                if (Direction == Orientation.Left)
+                if (Direction == Orientation.Left || Direction == Orientation.Right)
                 {
                     AddCell(Board.GetCellAt(Row, Column));
                     AddCell(Board.GetCellAt(Row, Column + 1));
@@ -248,34 +206,168 @@ namespace AA_Proyecto2
             }
             catch (Exception e)
             {
-                Cells = new SudokuCell[4];
-                Length = 0;
+                if (e.Message == "Celda ya tiene Tetro")
+                {
+                    ResetCells();
+                    CellWithTetro = true;
+                }
             }
+            return CellWithTetro;
         }
 
-        private void Arrange_J(Sudoku Board, int Row, int Column) //WIP
+        private bool Arrange_J(Sudoku Board, int Row, int Column) //WIP
         {
+            bool CellWithTetro = false;
+            try
+            {
+                switch(Direction)
+                {
+                    case (Orientation.Left):
+                        break;
 
+                    case (Orientation.Up):
+                        break;
+
+                    case (Orientation.Right):
+                        break;
+
+                    case (Orientation.Down):
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Celda ya tiene Tetro")
+                {
+                    ResetCells();
+                    CellWithTetro = true;
+                }
+            }
+            return CellWithTetro;
         }
 
-        private void Arrange_L(Sudoku Board, int Row, int Column) //WIP
+        private bool Arrange_L(Sudoku Board, int Row, int Column) //WIP
         {
+            bool CellWithTetro = false;
+            try
+            {
+                switch (Direction)
+                {
+                    case (Orientation.Left):
+                        break;
 
+                    case (Orientation.Up):
+                        break;
+
+                    case (Orientation.Right):
+                        break;
+
+                    case (Orientation.Down):
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Celda ya tiene Tetro")
+                {
+                    ResetCells();
+                    CellWithTetro = true;
+                }
+            }
+            return CellWithTetro;
         }
 
-        private void Arrange_S(Sudoku Board, int Row, int Column) //WIP
+        private bool Arrange_S(Sudoku Board, int Row, int Column) //WIP
         {
+            bool CellWithTetro = false;
+            try
+            {
+                switch (Direction)
+                {
+                    case (Orientation.Left):
+                        break;
 
+                    case (Orientation.Up):
+                        break;
+
+                    case (Orientation.Right):
+                        break;
+
+                    case (Orientation.Down):
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Celda ya tiene Tetro")
+                {
+                    ResetCells();
+                    CellWithTetro = true;
+                }
+            }
+            return CellWithTetro;
         }
 
-        private void Arrange_T(Sudoku Board, int Row, int Column) //WIP
+        private bool Arrange_T(Sudoku Board, int Row, int Column) //WIP
         {
+            bool CellWithTetro = false;
+            try
+            {
+                switch (Direction)
+                {
+                    case (Orientation.Left):
+                        break;
 
+                    case (Orientation.Up):
+                        break;
+
+                    case (Orientation.Right):
+                        break;
+
+                    case (Orientation.Down):
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Celda ya tiene Tetro")
+                {
+                    ResetCells();
+                    CellWithTetro = true;
+                }
+            }
+            return CellWithTetro;
         }
 
-        private void Arrange_Z(Sudoku Board, int Row, int Column) //WIP
+        private bool Arrange_Z(Sudoku Board, int Row, int Column) //WIP
         {
+            bool CellWithTetro = false;
+            try
+            {
+                switch (Direction)
+                {
+                    case (Orientation.Left):
+                        break;
 
+                    case (Orientation.Up):
+                        break;
+
+                    case (Orientation.Right):
+                        break;
+
+                    case (Orientation.Down):
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Celda ya tiene Tetro")
+                {
+                    ResetCells();
+                    CellWithTetro = true;
+                }
+            }
+            return CellWithTetro;
         }
 
         /// <summary>
@@ -289,13 +381,26 @@ namespace AA_Proyecto2
             {
                 Cells[Length] = NewCell;
                 NewCell.sTetro = this;
-                NewCell.BackColor = color;
+                NewCell.BackColor = BackColor;
                 Length++;
             }
             else
-                throw new Exception();
+                throw new Exception("Celda ya tiene Tetro");
         }
 
+        /// <summary>
+        /// Clears the sTetro of every SudokuCell contained in the Cells array, and sets Lenght to zero
+        /// </summary>
+        public void ResetCells()
+        {
+            for (int i = 0; i < Length; i++) {
+                Cells[i].sTetro = null;
+                Cells[i].BackColor = System.Drawing.SystemColors.Info;
+            }
+            Cells = new SudokuCell[4];
+            Length = 0;
+        }
+        
         /// <summary>
         /// Assigns the result for the sum/multiplication on the Tetromino
         /// and displays it on the upper-leftmost cell (position 0 on the array)
@@ -355,7 +460,7 @@ namespace AA_Proyecto2
 
         public override string ToString()
         {
-            string strOut = GetShape() + "-" + GetDirection() + "-" + Mode + "-" + Result.ToString() + "-";
+            string strOut = Shape + "-" + GetDirection() + "-" + Mode + "-" + Result.ToString() + "-";
             SudokuCell cell;
             for (int i = 0; i < Length; i++)
             {

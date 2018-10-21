@@ -26,14 +26,12 @@ namespace AA_Proyecto2
         {
             InitializeComponent();
 
-            TimerThread = new BackgroundWorker();
-            TimerThread.WorkerReportsProgress = true;
+            TimerThread = new BackgroundWorker { WorkerReportsProgress = true };
             TimerThread.DoWork += Start_Watch;
             TimerThread.ProgressChanged += UpdateWatchLabel;
             
 
-            UIThread = new BackgroundWorker();
-            UIThread.WorkerSupportsCancellation = true;
+            UIThread = new BackgroundWorker() { WorkerSupportsCancellation = true };
             UIThread.DoWork += Th_InitializeBoard;
             UIThread.RunWorkerCompleted += Th_AddBoard;
 
@@ -80,7 +78,7 @@ namespace AA_Proyecto2
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btn_generate_Click(object sender, EventArgs e)
+        private void btn_generate_Click(object s, EventArgs ev)
         {
             sldr_size.Enabled = false;
             btn_generate.Enabled = false;
@@ -88,6 +86,9 @@ namespace AA_Proyecto2
             btn_reset.Enabled = true;
             btn_save.Enabled = true;
 
+            UIThread = new BackgroundWorker() { WorkerSupportsCancellation = true };
+            UIThread.DoWork += (sender, e) => Board.AddTetros();
+            UIThread.RunWorkerAsync();
             Start_Watch();
             // generate sudoku, execute Stop_Watch() on end
         }

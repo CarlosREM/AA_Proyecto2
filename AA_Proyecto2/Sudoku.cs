@@ -488,6 +488,18 @@ namespace AA_Proyecto2
             Controls.Add(CellGrid[Row, Column]);
         }
 
+        public void AddTetros()
+        {
+            for (int Row = 0; Row < Dimension; Row++)
+            {
+                for (int Col = 0; Col < Dimension; Col++)
+                {
+                    if (CellGrid[Row, Col].sTetro == null)
+                        Tetrominos.Add(new Tetromino(this, Row, Col));
+                }
+            }
+        }
+
         /// <summary>
         /// Checks for an existing number on the corresponding row
         /// </summary>
