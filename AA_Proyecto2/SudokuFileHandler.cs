@@ -9,9 +9,9 @@ namespace AA_Proyecto2
 {
     public class SudokuFileHandler
     {
-        public static string SaveSudoku(string strSudoku)
+        public static string SaveSudoku(string strSudoku, int Size)
         {
-            string sudokuSize = strSudoku[0] + "x" + strSudoku[0],
+            string sudokuSize = Size.ToString() + "x" + Size.ToString(),
                    fileName = "KillerSudoku-"+sudokuSize+"_" + DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss") + ".txt",
                    filePath = Path.Combine(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\")), @"saves");
             Console.WriteLine(filePath);
@@ -20,9 +20,9 @@ namespace AA_Proyecto2
             return fileName;
         }
 
-        public static Sudoku LoadSudoku(Sudoku OldBoard)
+        public static Sudoku LoadSudoku()
         {
-            Sudoku NewBoard = OldBoard;
+            Sudoku NewBoard = null;
             OpenFileDialog fileDialog = new OpenFileDialog
             {
                 InitialDirectory = Path.Combine(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\")), @"saves"),
@@ -68,6 +68,7 @@ namespace AA_Proyecto2
                 }
                 catch (Exception e) {
                     e.ToString();
+                    NewBoard = null;
                     throw new Exception("El archivo no tiene el formato adecuado.");
                 }
             }

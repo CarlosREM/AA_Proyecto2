@@ -92,14 +92,13 @@ namespace AA_Proyecto2
         private void GeneratorThreadCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Stop_Watch();
+            Board.Cursor = Cursors.Default;
             if (!Sudoku.stopGenerator)
             {
-                Thread.Sleep(1000);
-                Board.Clear();
                 btn_generate.Text = "GENERATED";
                 btn_generate.Enabled = false;
-                btn_solve.Enabled = true;
                 btn_reset.Enabled = true;
+                btn_reset.Text = "Clear Board";
                 btn_save.Enabled = true;
                 btn_load.Enabled = true;
             }
@@ -118,6 +117,7 @@ namespace AA_Proyecto2
         private void SolverThreadCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Stop_Watch();
+            Board.Cursor = Cursors.Default;
             if (!Sudoku.stopSolver)
             {
                 btn_solve.Text = "SOLVED";
@@ -144,6 +144,8 @@ namespace AA_Proyecto2
         {
             if (btn_generate.Text == "GENERATE")
             {
+                Board.Cursor = Cursors.AppStarting;
+
                 sldr_size.Enabled = false;
                 btn_generate.Text = "STOP";
                 btn_solve.Enabled = false;
@@ -172,13 +174,15 @@ namespace AA_Proyecto2
         {
             if (btn_solve.Text == "SOLVE SUDOKU")
             {
-                Start_Watch();
+                Board.Cursor = Cursors.AppStarting;
+
                 btn_solve.Text = "STOP";
                 btn_reset.Text = "Clear Board";
                 btn_reset.Enabled = false;
                 btn_save.Enabled = false;
                 btn_load.Enabled = false;
                 SolverThread.RunWorkerAsync();
+                Start_Watch();
             }
             else
             {
@@ -198,15 +202,16 @@ namespace AA_Proyecto2
         private void btn_reset_Click(object sender, EventArgs e)
         {
             bool reset = true;
+            DialogResult dr;
             if (btn_solve.Enabled)
             {
-                DialogResult dr = MessageBox.Show("Perderá el sudoku generado/cargado actualmente. Desea continuar?",
+                dr = MessageBox.Show("Perderá el sudoku generado/cargado actualmente. Desea continuar?",
                                       "Confirmacion - Reiniciar Sudoku", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                 reset = (dr == DialogResult.Yes); 
             }
             else if (btn_reset.Text == "Clear Board")
             {
-                DialogResult dr = MessageBox.Show("Perderá la resolución del Sudoku. Desea continuar?",
+                dr = MessageBox.Show("Perderá la resolución del Sudoku y no lo podrá salvar. Desea continuar?",
                       "Confirmacion - Limpiar Sudoku", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                 reset = (dr == DialogResult.Yes);
             }
@@ -224,16 +229,19 @@ namespace AA_Proyecto2
 
                     sldr_size.Enabled = true;
                     btn_generate.Enabled = true;
+                    btn_generate.Text = "GENERATE";
                     btn_solve.Enabled = false;
                     btn_reset.Enabled = false;
-                    btn_save.Enabled = false;
                 }
                 else
                 {
                     Board.Clear();
+                    btn_solve.Enabled = true;
+                    btn_solve.Text = "SOLVE SUDOKU";
                     btn_reset.Text = "Reset Board";
                     btn_solve.Enabled = true;
                 }
+                btn_save.Enabled = false;
 
             }
         }
@@ -245,7 +253,7 @@ namespace AA_Proyecto2
         /// <param name="e"></param>
         private void btn_save_Click(object sender, EventArgs e)
         {
-            string fileName = SudokuFileHandler.SaveSudoku(Board.ToString());
+            string fileName = SudokuFileHandler.SaveSudoku(Board.ToString(), Board.Dimension);
             MessageBox.Show("Guardado como \""+fileName+"\" en el directorio \"saves\" del proyecto",
                             "Guardar Killer Sudoku", MessageBoxButtons.OK, MessageBoxIcon.Information);
             btn_save.Enabled = false;
@@ -272,21 +280,27 @@ namespace AA_Proyecto2
             {
                 try
                 {
-                    Board.Dispose();
-                    Board = SudokuFileHandler.LoadSudoku(Board);
-                    Board.Location = new Point(180, 30);
-                    Controls.Add(Board);
-                    Refresh();
+                    Sudoku newBoard = SudokuFileHandler.LoadSudoku();
+                    if (newBoard != null)
+                    {
+                        Board.Dispose();
+                        Board = newBoard;
+                        Board.Location = new Point(180, 30);
+                        Controls.Add(Board);
+                        Refresh();
 
-                    sldr_size.Enabled = false;
-                    sldr_size.Value = Board.Dimension;
-                    btn_generate.Enabled = false;
-                    btn_solve.Enabled = true;
-                    btn_reset.Enabled = true;
-                    btn_save.Enabled = false;
+                        sldr_size.Enabled = false;
+                        sldr_size.Value = Board.Dimension;
+                        btn_generate.Enabled = false;
+                        btn_generate.Text = "GENERATED";
+                        btn_solve.Enabled = false;
+                        btn_reset.Enabled = true;
+                        btn_reset.Text = "Clear Board";
+                        btn_save.Enabled = false;
 
-                    if (Watch != null)
-                        Reset_Watch();
+                        if (Watch != null)
+                            Reset_Watch();
+                    }
                 }
                 catch(Exception exc)
                 {

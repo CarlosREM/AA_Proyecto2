@@ -391,7 +391,7 @@ namespace AA_Proyecto2
         /// <param name="NewCell"></param>
         public void AddCell(SudokuCell NewCell)
         {
-            if (Length < 4 && NewCell.sTetro == null)
+            if (Length < 4 && NewCell.sTetro == null && !CheckNumber(NewCell.GetNumber()))
             {
                 Cells[Length] = NewCell;
                 NewCell.sTetro = this;
@@ -399,7 +399,7 @@ namespace AA_Proyecto2
                 Length++;
             }
             else
-                throw new Exception("Celda ya tiene Tetro");
+                throw new Exception("Error al agregar Celda");
         }
 
         /// <summary>
@@ -449,8 +449,10 @@ namespace AA_Proyecto2
         public bool CheckNumber(int Number)
         {
             bool NumberFound = false;
-            foreach (SudokuCell Cell in Cells)
+            SudokuCell Cell;
+            for (int i = 0; i < Length; i++)
             {
+                Cell = Cells[i];
                 if (Cell.GetNumber() == Number)
                 {
                     NumberFound = true;

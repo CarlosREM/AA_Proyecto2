@@ -84,15 +84,15 @@ namespace AA_Proyecto2
 
             //Lbl_Number
             Lbl_Number.AutoSize = false;
-            Lbl_Number.Font = new Font("Courier New", 14F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-            Lbl_Number.Size = new Size(35, 30);
+            Lbl_Number.Font = new Font("Courier New", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Lbl_Number.Size = new Size(40, 30);
             Lbl_Number.Location = new Point(0, 5);
             Lbl_Number.TextAlign = ContentAlignment.BottomCenter;
 
             //Lbl_Result
             Lbl_Result.AutoSize = false;
-            Lbl_Result.Font = new Font("Courier New", 8F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-            Lbl_Result.Size = new Size(35, 15);
+            Lbl_Result.Font = new Font("Courier New", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Lbl_Result.Size = new Size(50, 15);
             Lbl_Result.Location = new Point(0, 0);
             Lbl_Result.BringToFront();
             Lbl_Result.Visible = false;
