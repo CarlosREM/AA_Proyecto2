@@ -405,6 +405,23 @@ namespace AA_Proyecto2
         }
 
         /// <summary>
+        /// Returns a boolean whether if it contains or not a Cell in the specified coordinates
+        /// </summary>
+        /// <returns></returns>
+        public bool ContainsCellAt(int Row, int Column)
+        {
+            bool found = false;
+            foreach (SudokuCell Cell in Cells)
+            {
+                if (Cell.Row == Row && Cell.Column == Column) {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
+        }
+
+        /// <summary>
         /// Clears the sTetro of every SudokuCell contained in the Cells array, and sets Lenght to zero
         /// </summary>
         public void ResetCells()

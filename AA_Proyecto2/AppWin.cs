@@ -21,6 +21,8 @@ namespace AA_Proyecto2
         private BackgroundWorker GeneratorThread;
         private BackgroundWorker SolverThread;
 
+        private SudokuSolver Solver;
+
         /// <summary>
         /// Default Constructor
         /// </summary>
@@ -39,17 +41,13 @@ namespace AA_Proyecto2
             GeneratorThread.DoWork += (sender, e) => Board.Generate();
             GeneratorThread.RunWorkerCompleted += GeneratorThreadCompleted;
 
+            Solver = new SudokuSolver();
             SolverThread = new BackgroundWorker() { WorkerSupportsCancellation = true };
-            SolverThread.DoWork += SolverThread_DoWork;
+            SolverThread.DoWork += (sender, e) => Solver.SolveSudoku(Board);
             SolverThread.RunWorkerCompleted += SolverThreadCompleted; ;
 
             InitializeBoard(9);
             Controls.Add(Board);
-        }
-
-        private void SolverThread_DoWork(object sender, DoWorkEventArgs e)
-        {
-            
         }
 
         /// <summary>
@@ -119,7 +117,7 @@ namespace AA_Proyecto2
         {
             Stop_Watch();
             Board.Cursor = Cursors.Default;
-            if (!Sudoku.stopSolver)
+            if (!SudokuSolver.Stop)
             {
                 btn_solve.Text = "SOLVED";
                 btn_solve.Enabled = false;
@@ -129,7 +127,7 @@ namespace AA_Proyecto2
             }
             else
             {
-                Sudoku.stopSolver = false;
+                SudokuSolver.Stop = false;
                 btn_solve.Text = "SOLVE SUDOKU";
             }
         }
@@ -188,10 +186,9 @@ namespace AA_Proyecto2
             }
             else
             {
-                Sudoku.stopSolver = true;
+                SudokuSolver.Stop = true;
                 btn_solve.Enabled = false;
                 btn_reset.Enabled = true;
-                btn_save.Enabled = true;
                 btn_load.Enabled = true;
             }
         }

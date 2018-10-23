@@ -16,7 +16,6 @@ namespace AA_Proyecto2
 
         //For UI threads
         public static bool stopGenerator = false;
-        public static bool stopSolver = false;
 
         public int Dimension;
         private SudokuCell[,] CellGrid;
@@ -498,6 +497,26 @@ namespace AA_Proyecto2
         }
 
         /// <summary>
+        /// Gets the corresponding Tetromino for a specific coordinate
+        /// </summary>
+        /// <param name="Row"></param>
+        /// <param name="Col"></param>
+        /// <returns></returns>
+        public Tetromino GetTetroAt(int Row, int Col)
+        {
+            Tetromino foundTetro = null;
+            foreach (Tetromino Tetro in Tetrominos)
+            {
+                if (Tetro.ContainsCellAt(Row, Col))
+                {
+                    foundTetro = Tetro;
+                    break;
+                }
+            }
+            return foundTetro;
+        }
+
+        /// <summary>
         /// Generates a random Killer Sudoku Board
         /// </summary>
         /// <returns></returns>
@@ -513,7 +532,6 @@ namespace AA_Proyecto2
             {
                 for (int j = 0; j < Dimension && !stopGenerator; j++)
                 {
-                    //numberListArray[i + j] = numberListArray[i + j];
                     cell = CellGrid[i, j];
                     if (cell.GetNumber() == 0)
                         numberListArray[i + j] = GenerateNumberList();
@@ -673,9 +691,7 @@ namespace AA_Proyecto2
                 for (int col = 0; col < Dimension; col++)
                 {
                     if (!CellGrid[row, col].Locked)
-                    {
                         CellGrid[row, col].SetNumber(0);
-                    }
                 }
             }
         }
