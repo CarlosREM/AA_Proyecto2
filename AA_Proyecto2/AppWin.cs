@@ -40,15 +40,16 @@ namespace AA_Proyecto2
             GeneratorThread.RunWorkerCompleted += GeneratorThreadCompleted;
 
             SolverThread = new BackgroundWorker() { WorkerSupportsCancellation = true };
-            SolverThread.DoWork += (sender, e) =>
-            {
-                BackgroundWorker bw = sender as BackgroundWorker;
-                for (int i = 0; i < 1000000000 && !Sudoku.stopSolver; i++) { }
-            };
+            SolverThread.DoWork += SolverThread_DoWork;
             SolverThread.RunWorkerCompleted += SolverThreadCompleted; ;
 
             InitializeBoard(9);
             Controls.Add(Board);
+        }
+
+        private void SolverThread_DoWork(object sender, DoWorkEventArgs e)
+        {
+            
         }
 
         /// <summary>
@@ -176,6 +177,7 @@ namespace AA_Proyecto2
             {
                 Board.Cursor = Cursors.AppStarting;
 
+                EnableThreadControls(false);
                 btn_solve.Text = "STOP";
                 btn_reset.Text = "Clear Board";
                 btn_reset.Enabled = false;
@@ -226,7 +228,7 @@ namespace AA_Proyecto2
                     int dimension = sldr_size.Value;
                     NewSudokuThread.RunWorkerAsync(argument: dimension);
                     Refresh();
-
+                    EnableThreadControls(false);
                     sldr_size.Enabled = true;
                     btn_generate.Enabled = true;
                     btn_generate.Text = "GENERATE";
@@ -236,6 +238,8 @@ namespace AA_Proyecto2
                 else
                 {
                     Board.Clear();
+
+                    EnableThreadControls(true);
                     btn_solve.Enabled = true;
                     btn_solve.Text = "SOLVE SUDOKU";
                     btn_reset.Text = "Reset Board";
@@ -289,6 +293,7 @@ namespace AA_Proyecto2
                         Controls.Add(Board);
                         Refresh();
 
+                        EnableThreadControls(false);
                         sldr_size.Enabled = false;
                         sldr_size.Value = Board.Dimension;
                         btn_generate.Enabled = false;
@@ -343,12 +348,16 @@ namespace AA_Proyecto2
         /// <param name="e"></param>
         private void btn_useThreads_CheckedChanged(object sender, EventArgs e)
         {
-            if (btn_useThreads.Checked)
-                lbl_threadNum.Text = sldr_thread.Value.ToString();
-            else
-                lbl_threadNum.Text = "";
+            lbl_threadNum.Text = sldr_thread.Value.ToString();
             sldr_thread.Enabled = btn_useThreads.Checked;
-            lbl_threadNum.Enabled = btn_useThreads.Checked;
+            lbl_threadNum.Visible = lbl_threadNum.Enabled = btn_useThreads.Checked;
+        }
+        
+        private void EnableThreadControls(bool enabled)
+        {
+            btn_useThreads.Enabled = enabled;
+            sldr_thread.Enabled = (enabled && btn_useThreads.Checked) ? true : false;
+            lbl_threadNum.Enabled = sldr_thread.Enabled;
         }
 
         /// <summary>

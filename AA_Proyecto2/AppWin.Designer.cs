@@ -123,11 +123,12 @@
             // 
             // btn_useThreads
             // 
+            this.btn_useThreads.Enabled = false;
             this.btn_useThreads.Font = new System.Drawing.Font("Corbel", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_useThreads.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btn_useThreads.Location = new System.Drawing.Point(104, 61);
+            this.btn_useThreads.Location = new System.Drawing.Point(98, 61);
             this.btn_useThreads.Name = "btn_useThreads";
-            this.btn_useThreads.Size = new System.Drawing.Size(101, 57);
+            this.btn_useThreads.Size = new System.Drawing.Size(111, 57);
             this.btn_useThreads.TabIndex = 11;
             this.btn_useThreads.Text = "Use Threads";
             this.btn_useThreads.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

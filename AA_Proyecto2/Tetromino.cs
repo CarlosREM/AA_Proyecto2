@@ -9,6 +9,8 @@ namespace AA_Proyecto2
     {
         public static List<Color> UsedColors;
 
+        public bool WorkedOn = false;
+
         private int Result;
         private string Shape;
         private string Direction;
@@ -409,7 +411,7 @@ namespace AA_Proyecto2
         {
             for (int i = 0; i < Length; i++) {
                 Cells[i].sTetro = null;
-                Cells[i].BackColor = System.Drawing.SystemColors.Info;
+                Cells[i].BackColor = SystemColors.Info;
             }
             Cells = new SudokuCell[4];
             Length = 0;
@@ -460,6 +462,43 @@ namespace AA_Proyecto2
                 }
             }
             return NumberFound;
+        }
+
+        /// <summary>
+        /// Verifies that every Cell within Cells contains a number different than zero
+        /// </summary>
+        /// <returns></returns>
+        public bool IsFull()
+        {
+            bool isFull = true;
+            foreach (SudokuCell Cell in Cells)
+            {
+                if (Cell.GetNumber() == 0)
+                {
+                    isFull = false;
+                    break;
+                }
+            }
+            return isFull;
+        }
+
+        /// <summary>
+        /// Checks if the Cells contained make the correct result, based on the operator Mode
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckResult()
+        {
+            int resultTry = 0;
+            if (Mode == "x")
+                resultTry++;
+            foreach (SudokuCell Cell in Cells)
+            {
+                if (Mode == "+")
+                    resultTry += Cell.GetNumber();
+                else
+                    resultTry *= Cell.GetNumber();
+            }
+            return (resultTry == Result);
         }
 
         public static Color PickColor()
