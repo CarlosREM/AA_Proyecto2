@@ -11,8 +11,6 @@ namespace AA_Proyecto2
 {
     public partial class SudokuCell : Panel
     {
-        public bool Locked = false;
-
         /// <summary>
         /// Number on the center of the Cell
         /// </summary>

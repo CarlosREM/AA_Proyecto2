@@ -9,7 +9,7 @@ namespace AA_Proyecto2
     {
         public static List<Color> UsedColors;
 
-        public bool WorkedOn = false;
+        private static readonly object Threadlock = new object();
 
         private int Result;
         private string Shape;
@@ -51,16 +51,12 @@ namespace AA_Proyecto2
             Result = int.Parse(infoTokens[3]);
 
             string[] coordinates;
-            int cellNum = infoTokens.Length,
+            int cellNum = infoTokens.Length - 4,
                 Row, Column;
-            if (Shape != "D")
-                cellNum -= 4;
-            else
-                cellNum--;
             Cells = new SudokuCell[cellNum];
-            for (int i = 0; cellNum + i < infoTokens.Length; i++)
+            for (int i = 0; 4 + i < infoTokens.Length; i++)
             {
-                coordinates = infoTokens[cellNum + i].Split(',');
+                coordinates = infoTokens[4 + i].Split(',');
                 Row = int.Parse(coordinates[0]);
                 Column = int.Parse(coordinates[1]);
                 AddCell(Board.GetCellAt(Row, Column));
@@ -435,6 +431,15 @@ namespace AA_Proyecto2
         }
         
         /// <summary>
+        /// Clears the number stored in the Cells contained in the Tetromino
+        /// </summary>
+        public void ClearCells()
+        {
+            foreach (SudokuCell Cell in Cells)
+                Cell.SetNumber(0);
+        }
+
+        /// <summary>
         /// Assigns the result for the sum/multiplication on the Tetromino
         /// and displays it on the upper-leftmost cell (position 0 on the array)
         /// </summary>
@@ -481,43 +486,6 @@ namespace AA_Proyecto2
             return NumberFound;
         }
 
-        /// <summary>
-        /// Verifies that every Cell within Cells contains a number different than zero
-        /// </summary>
-        /// <returns></returns>
-        public bool IsFull()
-        {
-            bool isFull = true;
-            foreach (SudokuCell Cell in Cells)
-            {
-                if (Cell.GetNumber() == 0)
-                {
-                    isFull = false;
-                    break;
-                }
-            }
-            return isFull;
-        }
-
-        /// <summary>
-        /// Checks if the Cells contained make the correct result, based on the operator Mode
-        /// </summary>
-        /// <returns></returns>
-        public bool CheckResult()
-        {
-            int resultTry = 0;
-            if (Mode == "x")
-                resultTry++;
-            foreach (SudokuCell Cell in Cells)
-            {
-                if (Mode == "+")
-                    resultTry += Cell.GetNumber();
-                else
-                    resultTry *= Cell.GetNumber();
-            }
-            return (resultTry == Result);
-        }
-
         public static Color PickColor()
         {
             bool uniqueColor = false;
@@ -551,6 +519,126 @@ namespace AA_Proyecto2
             }
             return strOut;
             //Output = [Shape]-[Direction]-[Mode]-[Result]-[Cells...]
+        }
+
+        public class TetroTemplate
+        {
+            Tetromino original;
+            private int[,] CellCoord;
+            private int Result;
+            private string Mode;
+
+            /// <summary>
+            /// Creates a Template based on a Tetromino from the Sudoku Board
+            /// </summary>
+            /// <param name="pTetro"></param>
+            public TetroTemplate(Tetromino pTetro)
+            {
+                original = pTetro;
+                Result = pTetro.Result;
+                Mode = pTetro.Mode;
+                CellCoord = new int[pTetro.Cells.Length, 2];
+                for (int i = 0; i < pTetro.Length; i++)
+                {
+                    CellCoord[i, 0] = pTetro.Cells[i].Row;
+                    CellCoord[i, 1] = pTetro.Cells[i].Column;
+                }
+            }
+
+            /// <summary>
+            /// Checks if the Tetromino contains the respective Coordinates
+            /// </summary>
+            /// <param name="Row"></param>
+            /// <param name="Col"></param>
+            /// <returns></returns>
+            public bool ContainsCoord(int Row, int Col)
+            {
+                bool contains = false;
+                for (int i = 0; i < original.Length && !contains; i++)
+                    if (CellCoord[i, 0] == Row && CellCoord[i, 1] == Col)
+                        contains = true;
+                return contains;
+            }
+
+            /// <summary>
+            /// Checks for an existing number in the Tetromino
+            /// </summary>
+            /// <param name="newValue"></param>
+            /// <param name="Board"></param>
+            /// <returns></returns>
+            public bool CheckNumber(int newValue, int thisRow, int thisCol, int[,] Board)
+            {
+                bool NumberFound = false;
+                int CellNum = CellCoord.GetUpperBound(0) + 1,
+                    Cell;
+                for (int i = 0; i < CellNum && !NumberFound; i++)
+                {
+                    if (CellCoord[i, 0] == thisRow && CellCoord[i, 1] == thisCol)
+                        continue;
+                    else
+                    {
+                        Cell = Board[CellCoord[i, 0], CellCoord[i, 1]];
+                        if (Cell == newValue)
+                        {
+                            NumberFound = true;
+                            //Console.WriteLine("Found number on Tetromino");
+                        }
+                    }
+                }
+                return NumberFound;
+            }
+
+            /// <summary>
+            /// Verifies that every Cell within Cells contains a number different than zero
+            /// </summary>
+            /// <param name="Board"></param>
+            /// <returns></returns>
+            public bool IsFull(int[,] Board)
+            {
+                //Console.Write("(T) =>> This Tetro is...");
+                bool isFull = true;
+                for (int i = 0; i < original.Length && isFull; i++)
+                    if (Board[CellCoord[i, 0], CellCoord[i, 1]] == 0)
+                    {
+                        //Console.Write(" Not");
+                        isFull = false;
+                    }
+                //Console.WriteLine(" Full");
+                return isFull;
+            }
+
+            /// <summary>
+            /// Checks if the Cells contained make the correct result, based on the operator Mode
+            /// </summary>
+            /// <param name="Board"></param>
+            /// <returns></returns>
+            public bool CheckResult(int[,] Board)
+            {
+
+                int ResultTry = (Mode == "x") ? 1 : 0,
+                    number;
+                lock (Threadlock)
+                {
+                    //Console.Write("(T) =>> The tetro Result is...");
+                    for (int i = 0; i < original.Length; i++)
+                    {
+                        number = Board[CellCoord[i, 0], CellCoord[i, 1]];
+                        if (Mode == "x")
+                            ResultTry *= number;
+                        else
+                            ResultTry += number;
+                        original.Cells[i].SetNumber(number);
+                    }
+                    //System.Threading.Thread.Sleep(10);
+                    if (ResultTry != Result)
+                    {
+                        //Console.Write(" Not");
+                        original.ClearCells();
+                    }
+                    //Console.WriteLine(" Correct!");
+                }
+                return ResultTry == Result;
+            }
         }
     }
 }

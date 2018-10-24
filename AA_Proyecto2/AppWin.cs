@@ -21,7 +21,7 @@ namespace AA_Proyecto2
         private BackgroundWorker GeneratorThread;
         private BackgroundWorker SolverThread;
 
-        private SudokuSolver Solver;
+        private SudokuSolver SolverStarter;
 
         /// <summary>
         /// Default Constructor
@@ -41,9 +41,9 @@ namespace AA_Proyecto2
             GeneratorThread.DoWork += (sender, e) => Board.Generate();
             GeneratorThread.RunWorkerCompleted += GeneratorThreadCompleted;
 
-            Solver = new SudokuSolver();
+            SolverStarter = new SudokuSolver();
             SolverThread = new BackgroundWorker() { WorkerSupportsCancellation = true };
-            SolverThread.DoWork += (sender, e) => Solver.SolveSudoku(Board);
+            SolverThread.DoWork += SolverThreadStartup;
             SolverThread.RunWorkerCompleted += SolverThreadCompleted; ;
 
             InitializeBoard(9);
@@ -108,6 +108,14 @@ namespace AA_Proyecto2
             }
         }
 
+        private void SolverThreadStartup(object sender, DoWorkEventArgs e)
+        {
+            int threadNum = 1;
+            if (btn_useThreads.Checked)
+                sldr_thread.Invoke((MethodInvoker)(() => threadNum = sldr_thread.Value));
+            SolverStarter.StartSolver(Board, threadNum);
+        }
+
         /// <summary>
         /// Executes when the Solver thread finalizes
         /// </summary>
@@ -117,19 +125,18 @@ namespace AA_Proyecto2
         {
             Stop_Watch();
             Board.Cursor = Cursors.Default;
-            if (!SudokuSolver.Stop)
+            if (SudokuSolver.Solved)
             {
                 btn_solve.Text = "SOLVED";
                 btn_solve.Enabled = false;
-                btn_reset.Enabled = true;
                 btn_save.Enabled = true;
                 btn_load.Enabled = true;
+                SudokuSolver.Solved = false;
             }
             else
-            {
-                SudokuSolver.Stop = false;
                 btn_solve.Text = "SOLVE SUDOKU";
-            }
+            btn_reset.Enabled = true;
+            SudokuSolver.Stop = false;
         }
 
         // UI USABILITY - - - - - - - - -
@@ -205,13 +212,13 @@ namespace AA_Proyecto2
             if (btn_solve.Enabled)
             {
                 dr = MessageBox.Show("Perderá el sudoku generado/cargado actualmente. Desea continuar?",
-                                      "Confirmacion - Reiniciar Sudoku", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                                      "Confirmacion - Reiniciar Sudoku", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 reset = (dr == DialogResult.Yes); 
             }
             else if (btn_reset.Text == "Clear Board")
             {
                 dr = MessageBox.Show("Perderá la resolución del Sudoku y no lo podrá salvar. Desea continuar?",
-                      "Confirmacion - Limpiar Sudoku", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                      "Confirmacion - Limpiar Sudoku", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 reset = (dr == DialogResult.Yes);
             }
             if (reset)
@@ -428,6 +435,5 @@ namespace AA_Proyecto2
             lbl_timer.Text = "Timer - 00:00:00.00"; //+ Watch.Elapsed.ToString("hh':'mm':'ss'.'ff");
             lbl_timer.ForeColor = Color.SaddleBrown;
         }
-
     }
 }

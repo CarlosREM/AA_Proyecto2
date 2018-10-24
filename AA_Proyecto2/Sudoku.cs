@@ -103,20 +103,6 @@ namespace AA_Proyecto2
                     Arrange_default();//19x19(); //WIP
                     break;
             }
-            //RegionTest();
-
-            //Region Console test
-            /*
-            for (int i = 0; i < Dimension; i++)
-                Console.WriteLine(i + " " + Regions[i].ToString());
-            
-            //*///Tetromino test
-            /*
-            if (CellGrid[0, 0] != null) {
-                Tetromino t = new Tetromino(this, 0, 0);
-                Tetrominos.Add(t);
-            }
-            //*/
         }
 
 		private void Arrange_5x5()
@@ -570,7 +556,7 @@ namespace AA_Proyecto2
         /// Generates a List of numbers based on the dimension of the Sudoku
         /// </summary>
         /// <returns></returns>
-        private List<int> GenerateNumberList()
+        public List<int> GenerateNumberList()
         {
             List<int> newNumList = null;
             switch(Dimension)
@@ -687,13 +673,8 @@ namespace AA_Proyecto2
         public void Clear()
         {
             for (int row = 0; row < Dimension; row++)
-            {
                 for (int col = 0; col < Dimension; col++)
-                {
-                    if (!CellGrid[row, col].Locked)
-                        CellGrid[row, col].SetNumber(0);
-                }
-            }
+                    CellGrid[row, col].SetNumber(0);
         }
     }
 }
